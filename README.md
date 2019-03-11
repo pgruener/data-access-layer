@@ -1,2 +1,2 @@
 # data-binding
-Data Binding for JavaScript UI Frameworks with RESTful backend
+Data Binding with offline mode for JavaScript UI Frameworks with RESTful backend
