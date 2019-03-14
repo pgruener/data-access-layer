@@ -204,7 +204,7 @@ export class DataModel
     }
   }
 
-  getChangedProperties()
+  get changedProperties():ObjectMap
   {
     return this.clientChangedProperties
   }

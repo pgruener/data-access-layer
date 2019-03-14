@@ -76,7 +76,7 @@ export abstract class DataProviderConfig
   }
 
   public prepareForServer = (dataModel:DataModel):ObjectMap => {
-    return dataModel.mapDataOut(dataModel.getChangedProperties())
+    return dataModel.mapDataOut(dataModel.changedProperties)
   }
 
   public shrinkFilterCollectionForSelection = (filterCollection:FilterCollection<DataModel>):FilterCollection<DataModel> =>
