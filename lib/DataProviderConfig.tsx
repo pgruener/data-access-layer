@@ -104,5 +104,18 @@ export abstract class DataProviderConfig
     return url.replace('${date_begin}', dateBegin.toString()).replace('${date_end}', dateEnd.toString())
   }
 
+  /**
+   * Retuns the duration, a {DataModel} should wait until it propagates changes to its listeners.
+   * The time resets after every change. 
+   * 
+   * Critical listeners do not respect this value. 
+   * @name getChangePropagateWaitDuration
+   * @returns {Duration} 
+   */
+  public getChangePropagateWaitDuration():Duration
+  {
+    return new Duration(100)
+  }
+
   //getLoadedTimeRanges|propertyName... evtl. in Wrapper?!
 }

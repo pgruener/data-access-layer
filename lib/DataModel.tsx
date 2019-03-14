@@ -4,7 +4,6 @@ import {DataProvider} from './DataProvider';
 import {ObjectMap} from "./ObjectMap";
 
 const CLIENT_ID_ATTRIBUTE = 'data-access-layer___client___id'
-const CHANGE_PROPAGATE_WAIT_MILLIS = 100
 
 export class DataModel
 {
@@ -48,7 +47,7 @@ export class DataModel
       this.listeners.forEach((listener) => {
         listener.dataModelChanged(this)
       })
-    }, CHANGE_PROPAGATE_WAIT_MILLIS)
+    }, this.dataProvider.getConfig().getChangePropagateWaitDuration().getMilliSeconds())
 
   }
 
