@@ -64,7 +64,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-  private loadIndexData(scopeName:string)
+  private loadData(scopeName:string)
   {
     let scopeOrUrl = this.config.getScopes()[scopeName]
 
@@ -92,16 +92,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
     if (indexUrl)
     {
-
-      // // FIXME: Muss über DataProviderConfig realisiert werden
-      // let todayMidnight = DateHelper.dateToMidnight(new Date())
-      // let dateBegin = DateHelper.getCopyAddDays(todayMidnight, 0)
-      // let dateEnd = DateHelper.getCopyAddDays(todayMidnight, 1)
-
-      let dateBegin = new Date(2019,2,14,0,0,0,0)
-      let dateEnd = new Date(2019,2,15,0,0,0,0)
-
-      indexUrl = indexUrl.replace('${date_begin}', dateBegin.toString()).replace('${date_end}', dateEnd.toString())
+      indexUrl = this.config.computeSelectionUrl(indexUrl)
 
       this.config.getBackendConnector().get<ObjectMap[]>(indexUrl).done((objectMaps:ObjectMap[]) => {
 
@@ -313,7 +304,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
     if (shouldLoad)
     {
-      this.loadIndexData(options.scope)
+      this.loadData(options.scope)
     }
 
     return dataCollection
@@ -322,6 +313,6 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   filtersChanged(scope:string, filtersChanged:FilterCollection<T>)
   {
     // TODO: Look into data and decide, wether there should be a new query against the server
-    //this.loadIndexData(scope)
+    //this.loadData(scope)
   }
 }

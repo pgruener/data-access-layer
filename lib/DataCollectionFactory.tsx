@@ -4,8 +4,9 @@ import { BackendConnector } from "./BackendConnector";
 import { DataCollectionOptions } from "./DataCollectionOptions";
 import { DataModel } from "./DataModel";
 import { ObjectMap } from "./ObjectMap";
-import { DataProviderConfig } from "./DataProviderConfig";
 import { ExternalDataCollectionFactory } from "./ExternalDataCollectionFactory";
+import { DataProviderConfigConstructor } from "./DataProviderConfigConstructor";
+import { DataModelConstructor } from "./DataModelConstructor";
 
 export class DataCollectionFactory
 {
@@ -15,8 +16,8 @@ export class DataCollectionFactory
 
   private buildDataProvider<T extends DataModel>(
     dataProviderName:string,
-    dataProviderConfigClass:{ new(dataProviderName:string, backendConnector:BackendConnector): DataProviderConfig },
-    dataModelClass:{ new(properties:ObjectMap):T, computeIdentityHashCode(dataModel: DataModel | ObjectMap, dataProviderConfig: DataProviderConfig):string}
+    dataProviderConfigClass:DataProviderConfigConstructor,
+    dataModelClass:DataModelConstructor<T>
   ):DataProvider<T>
   {
     dataProviderName = DataCollectionFactory.normalizeName(dataProviderName)
@@ -33,8 +34,8 @@ export class DataCollectionFactory
 
   public createCollection<T extends DataModel>(
     dataProviderName:string,
-    dataProviderConfigClass:{ new(dataProviderName:string, backendConnector:BackendConnector): DataProviderConfig },
-    dataModelClass:{ new(properties:ObjectMap):T, computeIdentityHashCode(dataModel: DataModel | ObjectMap, dataProviderConfig: DataProviderConfig):string},
+    dataProviderConfigClass:DataProviderConfigConstructor,
+    dataModelClass:DataModelConstructor<T>,
     options?:DataCollectionOptions<T>
   ):DataCollection<T>
   {

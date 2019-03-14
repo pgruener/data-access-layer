@@ -79,5 +79,17 @@ export abstract class DataProviderConfig
     return dataModel.mapDataOut(dataModel.getChangedProperties())
   }
 
+  mergeFiltersForCollection = () =>
+  {
+
+  }
+
+  public computeSelectionUrl = (url:string):string => {
+    let dateBegin = new Date(2019,2,14,0,0,0,0)
+    let dateEnd = new Date(2019,2,15,0,0,0,0)
+
+    return url.replace('${date_begin}', dateBegin.toString()).replace('${date_end}', dateEnd.toString())
+  }
+
   //getLoadedTimeRanges|propertyName... evtl. in Wrapper?!
 }
