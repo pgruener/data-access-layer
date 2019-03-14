@@ -12,7 +12,7 @@ import ActionUrl = require('./ActionUrl');
 import { DataModel } from './DataModel';
 
 const DEFAULT_SCOPE_NAME = 'index'
-const CLIENT_ID_ATTRIBUTE = 'databinding___client___id'
+const CLIENT_ID_ATTRIBUTE = 'data-access-layer___client___id'
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {
   private state:DataProviderState = 'not_inited'

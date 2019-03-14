@@ -3,7 +3,7 @@ import {DataProviderConfig} from './DataProviderConfig';
 import {DataProvider} from './DataProvider';
 import {ObjectMap} from "./ObjectMap";
 
-const CLIENT_ID_ATTRIBUTE = 'databinding___client___id'
+const CLIENT_ID_ATTRIBUTE = 'data-access-layer___client___id'
 const CHANGE_PROPAGATE_WAIT_MILLIS = 100
 
 export class DataModel
