@@ -15,7 +15,7 @@ The data models' data collections are represented in a separate logical data lay
 
 There's a growing list of supported UI framework connectors with this data binding solution. Currently supported UI frameworks:
 - ReactXP
-- Plain Javascript
+- Plain JavaScript
 
 The backend connectors are also modularized to be able to communicate with any backend service(s). Currently we only used it to communicate with RESTful interfaces, but the connectors are designed as generic as there shouldn't be any trouble extending them.
 
