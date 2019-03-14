@@ -1,5 +1,8 @@
 # data-access-layer
-Data Binding with offline mode for JavaScript UI Frameworks with RESTful backend
+Data access layer with offline mode for JavaScript UI Frameworks with RESTful backend.
+
+This framework is currently *in development* and not ready for use. We are looking forward to deliver a production ready version soon. Stay tuned.
+
 
 One of the most exciting parts, if you wrap up a new app project with JavaScript based views with common ui frameworks like [React](https://reactjs.org/), [ReactXP](https://microsoft.github.io/reactxp/), [Angular](https://angular.io/), etc., is to present the first prototype. As the application grows, there will be several refactorings, as the data models gets more complicated. Also much more UX improvements take place in the ui components of the application.
 
