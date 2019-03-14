@@ -128,7 +128,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
     else
     {
-      throw new Error(`There is no destroy possible for ${this.config.getDataProviderName()}`)
+      throw new Error(`There is no destroy possible for ${this.config.dataProviderName}`)
     }
   }
 
@@ -181,7 +181,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
     else
     {
-      throw new Error(`There is no update possible for ${this.config.getDataProviderName()}`)
+      throw new Error(`There is no update possible for ${this.config.dataProviderName}`)
     }
   }
 
@@ -209,7 +209,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
     else
     {
-      throw new Error(`There is no update possible for ${this.config.getDataProviderName()}`)
+      throw new Error(`There is no update possible for ${this.config.dataProviderName}`)
     }
   }
 

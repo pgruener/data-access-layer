@@ -263,7 +263,7 @@ export class DataModel
 
   public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string
   {
-    let identityHashCode = dataProviderConfig.getDataProviderName() + '_'
+    let identityHashCode = dataProviderConfig.dataProviderName + '_'
 
     let attributeNames = dataProviderConfig.getIdentityRelevantAttributeNames()
 

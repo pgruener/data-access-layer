@@ -14,11 +14,11 @@ const DEFAULT_SCOPE_NAME = 'index'
 export abstract class DataProviderConfig
 {
   private backendConnector:BackendConnector
-  private dataProviderName:string
+  private _dataProviderName:string
 
   constructor(dataProviderName:string, backendConnector:BackendConnector)
   {
-    this.dataProviderName = dataProviderName
+    this._dataProviderName = dataProviderName
     this.backendConnector = backendConnector
   }
 
@@ -29,10 +29,9 @@ export abstract class DataProviderConfig
     return null
   }
 
-  getDataProviderName():string
-  {
-    return this.dataProviderName
-  }
+  get dataProviderName():string {
+    return this._dataProviderName;
+}
 
   getBackendConnector():BackendConnector
   {
