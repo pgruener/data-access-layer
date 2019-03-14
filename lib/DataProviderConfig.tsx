@@ -86,7 +86,13 @@ export abstract class DataProviderConfig
     return null
   }
 
-  private canSkipSelectionUrlComputation = ():boolean => {
+  /**
+   * Handles the decision, if complex selection url computation should get skipped.
+   * 
+   * @name canSkipSelectionUrlComputation
+   * @returns {boolean} <code>true</code>, if computation should be skipped, <code>false</code> otherwise. 
+   */
+  public canSkipSelectionUrlComputation = ():boolean => {
     let attributeNames = this.getSelectionRelevantAttributeNames()
     return attributeNames == undefined || attributeNames == null || attributeNames.length == 0
   }
