@@ -1,15 +1,15 @@
 # data-access-layer
 Data Binding with offline mode for JavaScript UI Frameworks with RESTful backend
 
-One of the most exciting parts if you wrap up a new app project with JavaScript based views with common ui frameworks like ReactJS, ReactXP, Angular, etc. is to present the first prototype. As the application grows, there will be several refactorings, as the data models gets more complicated. Also much more UX improvements take place in the ui components of the application.
+One of the most exciting parts, if you wrap up a new app project with JavaScript based views with common ui frameworks like [React](https://reactjs.org/), [ReactXP](https://microsoft.github.io/reactxp/), [Angular](https://angular.io/), etc., is to present the first prototype. As the application grows, there will be several refactorings, as the data models gets more complicated. Also much more UX improvements take place in the ui components of the application.
 
-At some point, it gets necessary, to display the same data models on different views and different ways. It might also be necessary to change parts of some data properties in several views and keep the other views up-to-date, which are also related to the changed data model(s).
+At some point, it gets necessary, to display the same data models on different views in different ways. It might also be necessary to change parts of some data properties in several views and keep the other views up-to-date, which are also related to the changed data model(s).
 
 At least when this point is reached, there is a huge reason to continue with structural organized data models with data binding to the destination views. Data binding enables views to get bound to either a concrete model entity, or a whole collection of data. As soon as some data is modified (independent of the modification came from a user via a view or an application based property update), those changes will be propagated to each view, which is bound to the updated data model.
 
 With the right data binding capability it is possible, to start in a lean and easy way upfront. It also takes advantage of clearly separating client- and model-based business logic, which is later synced to a backend.
 
-This data binding library builds an easy, structured way to define data models, binding them to views, and organize them to have a perfect backend synchronization.
+This data access layer library builds an easy, structured way to define data models, binding them to views, and organize them to have a perfect backend synchronization.
 
 The data models' data collections are represented in a separate logical data layer, which empowers the application to provide an offline mode right out of the box.
 
