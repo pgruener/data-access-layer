@@ -94,7 +94,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     {
       url = this.config.computeSelectionUrl(url, null)
 
-      this.config.getBackendConnector().get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
+      this.config.backendConnector.get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
 
         let entities = new Array()
   
@@ -215,7 +215,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
   public doServerRequest(actionUrl:ActionUrl, payload:ObjectMap, callback:(object:Object) => void)
   {
-    let backendConnector = this.config.getBackendConnector()
+    let backendConnector = this.config.backendConnector
     let apiMethod = backendConnector.getConcreteRequestMethod(actionUrl.method)
 
     apiMethod.apply(backendConnector, [actionUrl.url, payload]).done(callback)

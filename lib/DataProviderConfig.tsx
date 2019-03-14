@@ -13,13 +13,13 @@ const DEFAULT_SCOPE_NAME = 'index'
 
 export abstract class DataProviderConfig
 {
-  private backendConnector:BackendConnector
+  private _backendConnector:BackendConnector
   private _dataProviderName:string
 
   constructor(dataProviderName:string, backendConnector:BackendConnector)
   {
     this._dataProviderName = dataProviderName
-    this.backendConnector = backendConnector
+    this._backendConnector = backendConnector
   }
 
   public abstract getScopes:() => DataProviderScopeSet
@@ -31,11 +31,10 @@ export abstract class DataProviderConfig
 
   get dataProviderName():string {
     return this._dataProviderName;
-}
+  }
 
-  getBackendConnector():BackendConnector
-  {
-    return this.backendConnector
+  get backendConnector():BackendConnector {
+    return this._backendConnector;
   }
 
   public getUpdatedAtFieldName = ():string =>
