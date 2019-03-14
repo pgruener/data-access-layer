@@ -47,6 +47,13 @@ export abstract class DataProviderConfig
     return [ 'id' ]
   }
 
+  /**
+   * The framework only loads data from its data sources, if {FilterRule}s are applied,
+   * that touch selection relevant attributes.
+   * 
+   * @method getSelectionRelevantAttributeNames
+   * @returns {string[]} attributes may be overwritten by subclasses. Default [ 'id' ]
+   */
   public getSelectionRelevantAttributeNames = ():string[] =>
   {
     return [ 'id' ]
