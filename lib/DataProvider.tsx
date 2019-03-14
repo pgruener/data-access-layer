@@ -64,7 +64,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-  private loadData(scopeName:string)
+  private loadData(scopeName:string, collection?:DataCollection<T>)
   {
     let scopeOrUrl = this.config.getScopes()[scopeName]
 
@@ -92,7 +92,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
     if (url)
     {
-      url = this.config.computeSelectionUrl(url, null)
+      url = this.config.computeSelectionUrl(url, collection)
 
       this.config.backendConnector.get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
 
@@ -258,7 +258,6 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
     else if (dataModel.hasProperty(CLIENT_ID_ATTRIBUTE))
     {
-      // debugger
       this.writeInstanceToServer(dataModel)
     }
     else
@@ -310,9 +309,8 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     return dataCollection
   }
 
-  filtersChanged(scope:string, filtersChanged:FilterCollection<T>)
+  filtersChanged(scope:string, collection:DataCollection<T>)
   {
-    // TODO: Look into data and decide, wether there should be a new query against the server
-    //this.loadData(scope)
+    this.loadData(scope, collection)
   }
 }

@@ -185,7 +185,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
   {
     this.filters.addFilter(filter)
 
-    this.dataProvider.filtersChanged(this.scopeName, this.filters)
+    this.dataProvider.filtersChanged(this.scopeName, this)
 
     return this.applyFilters('normal')
   }
@@ -194,7 +194,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
   {
     this.filters.setFilter(filter)
 
-    this.dataProvider.filtersChanged(this.scopeName, this.filters)
+    this.dataProvider.filtersChanged(this.scopeName, this)
 
     return this.applyFilters('normal')
   }

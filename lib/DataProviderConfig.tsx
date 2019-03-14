@@ -65,7 +65,7 @@ export abstract class DataProviderConfig
     return new Duration(1000)
   }
 
-  public getRefetchInterval = ():Duration =>
+  getRefetchInterval = ():Duration =>
   {
     return new Duration(1000)
   }
