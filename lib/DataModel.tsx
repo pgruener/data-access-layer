@@ -100,16 +100,16 @@ export class DataModel
 
   removeListener(listener:DataModelListener)
   {
-    let index = this.listeners.indexOf(listener)
-    if (index > -1)
-    {
-      this.listeners.splice(index, 1 ); 
-    }
+    this.removeListenerIntern(listener, this.listeners)
+    this.removeListenerIntern(listener, this.criticalListeners)
+  }
 
-    index = this.criticalListeners.indexOf(listener)
+  private removeListenerIntern(listener:DataModelListener, list:Array<DataModelListener>)
+  {
+    let index = list.indexOf(listener)
     if (index > -1)
     {
-      this.criticalListeners.splice(index, 1 ); 
+      list.splice(index, 1);
     }
   }
   
