@@ -6,6 +6,8 @@ import DataProviderScopeSet = require("./DataProviderScopeSet");
 import {ObjectMap} from "./ObjectMap";
 import { Duration } from "./Duration";
 import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMoment";
+import FilterCollection = require("./FilterCollection");
+import { DataCollection } from "./DataCollection";
 
 const DEFAULT_SCOPE_NAME = 'index'
 
@@ -79,12 +81,23 @@ export abstract class DataProviderConfig
     return dataModel.mapDataOut(dataModel.getChangedProperties())
   }
 
-  mergeFiltersForCollection = () =>
+  public shrinkFilterCollectionForSelection = (filterCollection:FilterCollection<DataModel>):FilterCollection<DataModel> =>
   {
-
+    return null
   }
 
-  public computeSelectionUrl = (url:string):string => {
+  private canSkipSelectionUrlComputation = ():boolean => {
+    let attributeNames = this.getSelectionRelevantAttributeNames()
+    return attributeNames == undefined || attributeNames == null || attributeNames.length == 0
+  }
+
+  public computeSelectionUrl = <T extends DataModel>(url:string, selectionTriggerCollection:DataCollection<T>):string => {
+
+    if (this.canSkipSelectionUrlComputation())
+    {
+      return url
+    }
+
     let dateBegin = new Date(2019,2,14,0,0,0,0)
     let dateEnd = new Date(2019,2,15,0,0,0,0)
 

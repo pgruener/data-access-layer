@@ -68,15 +68,15 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   {
     let scopeOrUrl = this.config.getScopes()[scopeName]
 
-    let indexUrl
+    let url
 
     if (typeof scopeOrUrl == 'string')
     {
-      indexUrl = scopeOrUrl as string
+      url = scopeOrUrl as string
     }
     else
     {
-      indexUrl = (scopeOrUrl as {url:string})['url']
+      url = (scopeOrUrl as {url:string})['url']
 
       let initialEntities = (scopeOrUrl as {initialEntities:[ObjectMap]})['initialEntities']
 
@@ -90,11 +90,11 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
       }
     }
 
-    if (indexUrl)
+    if (url)
     {
-      indexUrl = this.config.computeSelectionUrl(indexUrl)
+      url = this.config.computeSelectionUrl(url, null)
 
-      this.config.getBackendConnector().get<ObjectMap[]>(indexUrl).done((objectMaps:ObjectMap[]) => {
+      this.config.getBackendConnector().get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
 
         let entities = new Array()
   
