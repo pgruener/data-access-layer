@@ -47,7 +47,7 @@ export class DataModel
       this.listeners.forEach((listener) => {
         listener.dataModelChanged(this)
       })
-    }, this.dataProvider.getConfig().getChangePropagateWaitDuration().getMilliSeconds())
+    }, this.dataProvider.config.getChangePropagateWaitDuration().getMilliSeconds())
 
   }
 
@@ -139,7 +139,7 @@ export class DataModel
   {
     let isPersisted = true
 
-    let identityRelevantAttributeNames = this.dataProvider.getConfig().getIdentityRelevantAttributeNames()
+    let identityRelevantAttributeNames = this.dataProvider.config.getIdentityRelevantAttributeNames()
     identityRelevantAttributeNames.forEach((attributeName) => {
       isPersisted = isPersisted && this.hasProperty(attributeName)
     })
@@ -225,7 +225,7 @@ export class DataModel
 
     let anythingChanged = false
 
-    let updatedAtFieldKey = this.dataProvider.getConfig().getUpdatedAtFieldName()
+    let updatedAtFieldKey = this.dataProvider.config.getUpdatedAtFieldName()
     let shouldMerge = !this.hasProperty(updatedAtFieldKey) || new Date(this.getProperty(updatedAtFieldKey)) < new Date(objectMap[updatedAtFieldKey].toString())
     
     if (shouldMerge)
@@ -250,12 +250,12 @@ export class DataModel
 
   computeIdentityHashCode():string
   {
-    return DataModel.computeIdentityHashCode(this, this.dataProvider.getConfig())
+    return DataModel.computeIdentityHashCode(this, this.dataProvider.config)
   }
 
   public performAction = (action:string, actionVariables:ObjectMap, payload:ObjectMap) =>
   {
-    this.dataProvider.getConfig().getActionUrlSet().getActionUrl(action, this, actionVariables)
+    this.dataProvider.config.getActionUrlSet().getActionUrl(action, this, actionVariables)
 
     // this.dataProviderConfig.getBackendConnector()
     // TODO: Do perform code...

@@ -16,7 +16,7 @@ const CLIENT_ID_ATTRIBUTE = 'data-access-layer___client___id'
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {
   private state:DataProviderState = 'not_inited'
-  private config:DataProviderConfig
+  private _config:DataProviderConfig
   private rootDataCollectionsByScope:{[scope:string]: RootDataCollection<T>} = {}
   private dataCollectionFactory:DataCollectionFactory
 
@@ -28,14 +28,14 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   constructor(dataCollectionFactory:DataCollectionFactory, config:DataProviderConfig, dataModelClass:{ new(properties:ObjectMap): T, computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string })
   {
     this.dataCollectionFactory = dataCollectionFactory
-    this.config = config
+    this._config = config
     this.dataModelClass = dataModelClass
   }
 
 
-  public getConfig()
+  get config():DataProviderConfig
   {
-    return this.config
+    return this._config
   }
 
   dataCollectionChanged(dataCollection:DataCollection<T>)
@@ -237,7 +237,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
       if (isBuild)
       {
-        this.getConfig().getNewInstanceDataModelScopeNames().forEach((scopeName) => {
+        this.config.getNewInstanceDataModelScopeNames().forEach((scopeName) => {
           this.buildRootDataCollection(scopeName).addDataModel(dataModel)
         })
       }
