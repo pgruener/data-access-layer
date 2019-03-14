@@ -1,8 +1,8 @@
 import DataCollectionChangeListener = require('./DataCollectionChangeListener')
 import DataCollectionChangeProvider = require('./DataCollectionChangeProvider')
 import DataCollectionConfig = require('./DataCollectionConfig')
-import {FilterRule} from './FilterRule'
-import FilterCollection = require('./FilterCollection');
+import {FilterRule} from './filter/FilterRule'
+import {FilterCollection} from './filter/FilterCollection';
 import {DataProvider} from './DataProvider';
 import { DataModel } from './DataModel';
 import { ApplyFilterMode } from './ApplyFilterMode';

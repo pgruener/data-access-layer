@@ -1,4 +1,4 @@
-import { DataModel } from './DataModel';
+import { DataModel } from '../DataModel';
 
 type FilterComparator = '<'|'<='|'>'|'>='|'=='|'!='
 type CompareFunction<T> = (value1:T, value2:T) => boolean

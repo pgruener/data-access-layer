@@ -1,5 +1,5 @@
 import DataCollectionChangeProvider = require('./DataCollectionChangeProvider')
-import {FilterRule} from './FilterRule'
+import {FilterRule} from './filter/FilterRule'
 import { DataProvider } from './DataProvider';
 import DataCollectionChangeListener = require('./DataCollectionChangeListener');
 import { DataModel } from './DataModel';

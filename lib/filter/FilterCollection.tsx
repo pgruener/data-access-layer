@@ -1,6 +1,7 @@
 import {FilterRule} from "./FilterRule";
-import { DataModel } from './DataModel';
-class FilterCollection<T extends DataModel>
+import { DataModel } from '../DataModel';
+
+export class FilterCollection<T extends DataModel>
 {
   private filterRules:FilterRule<Object>[] = new Array()
 
@@ -41,5 +42,3 @@ class FilterCollection<T extends DataModel>
     return this.filterRules
   }
 }
-
-export = FilterCollection

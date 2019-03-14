@@ -4,7 +4,7 @@ import {DataProviderConfig} from './DataProviderConfig'
 import DataCollectionChangeProvider = require('./DataCollectionChangeProvider')
 import DataCollectionChangeListener = require('./DataCollectionChangeListener')
 import { DataCollectionOptions } from './DataCollectionOptions'
-import FilterCollection = require('./FilterCollection');
+import FilterCollection = require('./filter/FilterCollection');
 import {DataCollectionFactory} from './DataCollectionFactory';
 import {ObjectMap} from "./ObjectMap";
 import DataProviderState = require('./DataProviderState');

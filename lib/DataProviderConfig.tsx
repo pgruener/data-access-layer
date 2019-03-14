@@ -6,7 +6,7 @@ import DataProviderScopeSet = require("./DataProviderScopeSet");
 import {ObjectMap} from "./ObjectMap";
 import { Duration } from "./Duration";
 import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMoment";
-import FilterCollection = require("./FilterCollection");
+import {FilterCollection} from "./filter/FilterCollection";
 import { DataCollection } from "./DataCollection";
 
 const DEFAULT_SCOPE_NAME = 'index'

@@ -1,4 +1,4 @@
-import { DataModel } from './DataModel';
+import { DataModel } from '../DataModel';
 import { FilterRule } from './FilterRule';
 
 export class FilterRuleMax extends FilterRule<String>
