@@ -20,5 +20,5 @@ There's a growing list of supported UI framework connectors with this data bindi
 The backend connectors are also modularized to be able to communicate with any backend service(s). Currently we only used it to communicate with RESTful interfaces, but the connectors are designed as generic as there shouldn't be any trouble extending them.
 
 Currently supported backend connectors:
-- [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) (currently focussed to the design of Rails applications (rails-api))
+- [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) (currently focussed to the design of [Rails](https://en.wikipedia.org/wiki/Ruby_on_Rails) applications (rails-api))
 - [localStorage](https://en.wikipedia.org/wiki/Web_storage#localStorage) (even if the browser's localStorage is not a backend, there is a possibility to persist the data in it if needed)
