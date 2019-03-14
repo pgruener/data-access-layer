@@ -1,0 +1,26 @@
+{
+  "name": "data-access-layer",
+  "version": "0.0.1",
+  "description": "data-access-layer will help.",
+  "main": "./lib/DataAccessLayer.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pgruener/data-access-layer.git"
+  },
+  "keywords": [
+    "data-access-layer",
+    "typescript",
+    "javascript",
+    "web",
+    "restful"
+  ],
+  "author": "Royal Software GmbH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pgruener/data-access-layer/issues"
+  },
+  "homepage": "https://github.com/pgruener/data-access-layer#readme"
+}

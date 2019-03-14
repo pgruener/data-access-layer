@@ -1,0 +1,1 @@
+export type DataProviderInitialRequestMoment = 'on_first_collection'

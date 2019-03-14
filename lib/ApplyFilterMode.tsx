@@ -1,0 +1,1 @@
+export type ApplyFilterMode = 'normal'|'skip'|'force'
