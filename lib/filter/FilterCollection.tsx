@@ -3,25 +3,25 @@ import { DataModel } from '../DataModel';
 
 export class FilterCollection<T extends DataModel>
 {
-  private filterRules:FilterRule<Object>[] = new Array()
+  private _filterRules:FilterRule<Object>[] = new Array()
 
-  public addFilter<T>(filter:FilterRule<T>|FilterRule<T>[])
+  public add<T>(filter:FilterRule<T>|FilterRule<T>[])
   {
-    this.filterRules = this.filterRules.concat(filter)
+    this._filterRules = this._filterRules.concat(filter)
   }
 
-  public setFilter<T>(filter:FilterRule<T>|FilterRule<T>[])
+  public set<T>(filter:FilterRule<T>|FilterRule<T>[])
   {
-    this.clearList()
-    this.addFilter(filter)
+    this.clear()
+    this.add(filter)
   }
 
-  private clearList()
+  private clear()
   {
-    this.filterRules.length = 0
+    this._filterRules.length = 0
   }
 
-  public runFilters(allEntities:T[]):T[]
+  public run(allEntities:T[]):T[]
   {
     let filteredEntities:T[] = allEntities.slice(0)
 
@@ -30,15 +30,15 @@ export class FilterCollection<T extends DataModel>
     // may not give correct results, since some FilterRules depend on the order (i.e. FilterRuleMax).
     // Before implementing, we would have to prove, that our result is deterministically the same.
 
-    this.filterRules.forEach((filterRule:FilterRule<T>) => {
+    this._filterRules.forEach((filterRule:FilterRule<T>) => {
       filteredEntities = filterRule.filter(filteredEntities) as T[]
     })
 
     return filteredEntities.slice(0)
   }
 
-  public getFilterRules():FilterRule<Object>[]
+  get filterRules():FilterRule<Object>[]
   {
-    return this.filterRules
+    return this._filterRules
   }
 }

@@ -14,7 +14,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   protected allEntities:T[] = new Array()
   protected filteredEntities:T[] = new Array()
-  private filters:FilterCollection<T> = new FilterCollection()
+  private _filters:FilterCollection<T> = new FilterCollection()
   
   private changeProvider:DataCollectionChangeProvider<T>
   protected dataProvider:DataProvider<T>
@@ -95,10 +95,14 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return entity
   }
 
+  get filters()
+  {
+    return this._filters
+  }
 
   protected applyFilters(applyFilterMode:ApplyFilterMode):boolean
   {
-    let filteredEntities:T[] = this.filters.runFilters(this.allEntities)
+    let filteredEntities:T[] = this._filters.run(this.allEntities)
 
     let somethingChanged =  applyFilterMode == 'force' || this.filteredEntitiesChanged(filteredEntities)
 
@@ -183,7 +187,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   public addFilter<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
   {
-    this.filters.addFilter(filter)
+    this._filters.add(filter)
 
     this.dataProvider.filtersChanged(this.scopeName, this)
 
@@ -192,7 +196,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   public setFilter<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
   {
-    this.filters.setFilter(filter)
+    this._filters.set(filter)
 
     this.dataProvider.filtersChanged(this.scopeName, this)
 
@@ -201,7 +205,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   public createCopy():DataCollection<T>
   {
-    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this.changeProvider, initialEntities: this.allEntities, filter: this.filters.getFilterRules(), scope: this.scopeName})
+    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this.changeProvider, initialEntities: this.allEntities, filter: this.filters.filterRules, scope: this.scopeName})
   }
 
   public createSubCollection(filter:FilterRule<Object>|FilterRule<Object>[]):DataCollection<T>

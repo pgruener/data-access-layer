@@ -85,7 +85,7 @@ export abstract class DataProviderConfig
     return dataModel.mapDataOut(dataModel.changedProperties)
   }
 
-  public shrinkFilterCollectionForSelection = (filterCollection:FilterCollection<DataModel>):FilterCollection<DataModel> =>
+  public extractFilterCollectionForSelection = (dataCollection:DataCollection<DataModel>):FilterCollection<DataModel> =>
   {
     return null
   }
