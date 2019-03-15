@@ -7,6 +7,7 @@ import { ObjectMap } from "./ObjectMap";
 import { ExternalDataCollectionFactory } from "./ExternalDataCollectionFactory";
 import { DataProviderConfigConstructor } from "./DataProviderConfigConstructor";
 import { DataModelConstructor } from "./DataModelConstructor";
+import { StringOperations } from './StringOperations'
 
 export class DataCollectionFactory
 {
@@ -57,26 +58,16 @@ export class DataCollectionFactory
     return dataProvider.createDataModel(map || {}, true) as T
   }
 
-
-  public static normalizeName(str:string):string
-  {
-    return this.capitalize(this.removeNonAlphaNumericChars(str))
-  }
-
-  private static removeNonAlphaNumericChars(str:string):string
-  {
-    return str.replace(/\W/g, '')
-  }
-
-  private static capitalize(str:string):string
-  {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  }
-
   public getExternalDataCollectionFactory()
   {
     return this.externalDataCollectionFactory
   }
+
+  public static normalizeName(str:string):string
+  {
+    return StringOperations.capitalize(StringOperations.removeNonAlphaNumericChars(str))
+  }
+
 
   constructor(externalDataCollectionFactory:ExternalDataCollectionFactory, backendConnector:BackendConnector)
   {
