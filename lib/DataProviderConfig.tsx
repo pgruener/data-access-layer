@@ -118,7 +118,7 @@ export abstract class DataProviderConfig
    * Retuns the duration, a {DataModel} should wait until it propagates changes to its listeners.
    * The time resets after every change. 
    * 
-   * Critical listeners do not respect this value. 
+   * Listeners, which are created with the optional *critical* flag do not respect this value. 
    * @name getChangePropagateWaitDuration
    * @returns {Duration} 
    */
