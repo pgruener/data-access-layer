@@ -61,7 +61,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-  private loadData(scopeName:string, collection?:DataCollection<T>)
+  private computeIndexUrl(scopeName:string):string
   {
     let scopeOrUrl = this.config.getScopes()[scopeName]
 
@@ -87,25 +87,42 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
       }
     }
 
+    return url
+  }
+
+  private loadData(scopeName:string, collection?:DataCollection<T>)
+  {
+    let url = this.computeIndexUrl(scopeName)
+
     if (url)
     {
-      url = this.config.computeSelectionUrl(url, collection)
+      if (this.shouldLoadData(url, collection))
+      {
+        url = this.config.computeSelectionUrl(url, collection)
 
-      this.config.backendConnector.get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
+        this.config.backendConnector.get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
+    
+          if (objectMaps)
+          {
+            let entities = new Array()
 
-        let entities = new Array()
+            objectMaps.forEach((objectMap) => {
+              entities.push(this.createDataModel(objectMap))
+            })
+
+            // FIXME: Instead mergeEntities
+            this.buildRootDataCollection(scopeName).setEntities(entities)
+          }
+        })
   
-        if (objectMaps)
-        {
-          objectMaps.forEach((objectMap) => {
-            entities.push(this.createDataModel(objectMap))
-          })
-        }
-  
-        // FIXME: Instead mergeEntities
-        this.buildRootDataCollection(scopeName).setEntities(entities)
-      })
+      }
     }
+  }
+
+  private shouldLoadData(url:string, selectionTriggerCollection:DataCollection<T>):boolean
+  {
+    // TODO: Must be implemented with correct behavior.
+    return true
   }
 
   public delete(dataModel:DataModel)
