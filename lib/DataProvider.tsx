@@ -17,7 +17,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   private rootDataCollectionsByScope:{[scope:string]: RootDataCollection<T>} = {}
   private dataCollectionFactory:DataCollectionFactory
 
-  private allEntities:{[s: string]: T} = {}
+  private _allEntities:{[s: string]: T} = {}
   private changeListeners:Array<DataCollectionChangeListener<T>> = new Array()
   private dataModelClass:{ new(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean): T, computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string }
 
@@ -131,24 +131,24 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
   private deleteIntern(identityHashCode:string)
   {
-    if (this.allEntities[identityHashCode])
+    if (this._allEntities[identityHashCode])
     {
-      delete this.allEntities[identityHashCode]
+      delete this._allEntities[identityHashCode]
   
       Object.keys(this.rootDataCollectionsByScope).forEach((key) => {
 
         // FIXME: This MUST be done by using remove instead writing ALL entities to every scope
-        this.rootDataCollectionsByScope[key].setEntities(this.getAllEntities())
+        this.rootDataCollectionsByScope[key].setEntities(this.allEntities)
       })
     }
   }
 
-  getAllEntities():T[]
+  get allEntities():T[]
   {
     let dataModels:T[] = []
 
-    Object.keys(this.allEntities).forEach((key) => {
-      dataModels.push(this.allEntities[key])
+    Object.keys(this._allEntities).forEach((key) => {
+      dataModels.push(this._allEntities[key])
     })
 
     return dataModels
@@ -170,10 +170,10 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
       this.doServerRequest(createUrl, payload, (objectMaps:ObjectMap) => {
         dataModel.mergeChanges(objectMaps)
 
-        delete this.allEntities[CLIENT_ID_ATTRIBUTE]
+        delete this._allEntities[CLIENT_ID_ATTRIBUTE]
         dataModel.removeProperty(CLIENT_ID_ATTRIBUTE)
 
-        this.allEntities[dataModel.computeIdentityHashCode()] = dataModel
+        this._allEntities[dataModel.computeIdentityHashCode()] = dataModel
       })
     }
     else
@@ -223,14 +223,14 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   {
     let identityHashCode = this.dataModelClass.computeIdentityHashCode(objectMap, this.config)
     
-    let dataModel = this.allEntities[identityHashCode]
+    let dataModel = this._allEntities[identityHashCode]
 
     if (!dataModel)
     {
       dataModel = new this.dataModelClass(objectMap, this, isBuild)
       identityHashCode = dataModel.computeIdentityHashCode()
 
-      this.allEntities[identityHashCode] = dataModel
+      this._allEntities[identityHashCode] = dataModel
 
       if (isBuild)
       {
