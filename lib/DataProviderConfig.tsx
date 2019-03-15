@@ -93,17 +93,17 @@ export abstract class DataProviderConfig
   /**
    * Handles the decision, if complex selection url computation should get skipped.
    * 
-   * @name canSkipSelectionUrlComputation
+   * @name shouldSkipSelectionUrlComputation
    * @returns {boolean} <code>true</code>, if computation should be skipped, <code>false</code> otherwise. 
    */
-  public canSkipSelectionUrlComputation = ():boolean => {
+  public shouldSkipSelectionUrlComputation = ():boolean => {
     let attributeNames = this.getSelectionRelevantAttributeNames()
     return attributeNames == undefined || attributeNames == null || attributeNames.length == 0
   }
 
   public computeSelectionUrl = <T extends DataModel>(url:string, selectionTriggerCollection:DataCollection<T>):string => {
 
-    if (this.canSkipSelectionUrlComputation())
+    if (this.shouldSkipSelectionUrlComputation())
     {
       return url
     }
