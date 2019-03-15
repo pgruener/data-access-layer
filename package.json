@@ -12,13 +12,17 @@
   },
   "keywords": [
     "data-access-layer",
+    "data-binding",
     "typescript",
     "javascript",
+    "localStorage",
+    "offline",
+    "ui-frameworks",
     "web",
     "restful"
   ],
   "author": "Royal Software GmbH",
-  "license": "ISC",
+  "license": "MIT License",
   "bugs": {
     "url": "https://github.com/pgruener/data-access-layer/issues"
   },
