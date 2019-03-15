@@ -8,8 +8,7 @@ import { Duration } from "./Duration";
 import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMoment";
 import {FilterCollection} from "./filter/FilterCollection";
 import { DataCollection } from "./DataCollection";
-
-const DEFAULT_SCOPE_NAME = 'index'
+import { DEFAULT_SCOPE_NAME } from './Constants';
 
 export abstract class DataProviderConfig
 {

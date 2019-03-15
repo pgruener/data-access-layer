@@ -3,7 +3,7 @@ import {DataProviderConfig} from './DataProviderConfig';
 import {DataProvider} from './DataProvider';
 import {ObjectMap} from "./ObjectMap";
 
-const CLIENT_ID_ATTRIBUTE = 'data-access-layer___client___id'
+import { CLIENT_ID_ATTRIBUTE } from './Constants';
 
 export class DataModel
 {
