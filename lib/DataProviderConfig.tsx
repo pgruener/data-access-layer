@@ -48,8 +48,8 @@ export abstract class DataProviderConfig
   }
 
   /**
-   * The framework only loads data from its data sources, if {FilterRule}s are applied,
-   * that touch selection relevant attributes.
+   * The framework only loads data from its data sources, if [FilterRules]{@link FilterRule} are applied,
+   * that touch selection relevant attributes or no selection relevant attributes exists.
    * 
    * @method getSelectionRelevantAttributeNames
    * @returns {string[]} attributes may be overwritten by subclasses. Default [ 'id' ]
