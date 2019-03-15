@@ -12,7 +12,7 @@ import { DataModel } from './DataModel';
 import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {
-  private state:DataProviderState = 'not_inited'
+  private _state:DataProviderState = 'not_inited'
   private _config:DataProviderConfig
   private rootDataCollectionsByScope:{[scope:string]: RootDataCollection<T>} = {}
   private dataCollectionFactory:DataCollectionFactory
@@ -42,9 +42,9 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     })
   }
 
-  getState():DataProviderState
+  get state():DataProviderState
   {
-    return this.state
+    return this._state
   }
 
   public addChangeListener(listener:DataCollectionChangeListener<T>)
