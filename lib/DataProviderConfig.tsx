@@ -112,6 +112,8 @@ export abstract class DataProviderConfig
     let dateEnd = new Date(2019,2,15,0,0,0,0)
 
     return url.replace('${date_begin}', dateBegin.toString()).replace('${date_end}', dateEnd.toString())
+
+    // TODO: Existing filters as url-param in default implementation, but just for selection relevant fields
   }
 
   /**
