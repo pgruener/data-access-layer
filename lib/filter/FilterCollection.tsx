@@ -1,24 +1,69 @@
 import { FilterRule } from "./FilterRule";
 import { DataModel } from '../DataModel';
+import { DataCollection } from "../DataCollection";
 
 export class FilterCollection<T extends DataModel>
 {
   private _filterRules:FilterRule<Object>[] = new Array()
+  private ownerCollection:DataCollection<T>
 
-  public add<T>(filter:FilterRule<T>|FilterRule<T>[])
+  constructor(ownerCollection:DataCollection<T>, filter?:FilterRule<Object>|FilterRule<Object>[])
   {
-    this._filterRules = this._filterRules.concat(filter)
-  }
-
-  public set<T>(filter:FilterRule<T>|FilterRule<T>[])
-  {
-    this.clear()
+    this.ownerCollection = ownerCollection
     this.add(filter)
   }
 
-  public clear()
+  private triggerListener(shouldSkipChangeListener?:boolean):boolean
+  {
+    if (!shouldSkipChangeListener)
+    {
+      return this.ownerCollection.filtersChanged()
+    }
+
+    return false
+  }
+
+  public add<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
+  {
+    this._filterRules = this._filterRules.concat(filter)
+    return this.triggerListener()
+  }
+
+  public remove<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
+  {
+    if (filter instanceof Array)
+    {
+      filter.forEach((currentFilter) => {
+        this.removeIntern(currentFilter)
+      })
+    }
+    else
+    {
+      this.removeIntern(filter)
+    }
+    
+    return this.triggerListener()
+  }
+
+  private removeIntern<T>(filterRule:FilterRule<T>)
+  {
+    let index = this._filterRules.indexOf(filterRule)
+    if (index !== -1)
+    {
+      this._filterRules.splice(index, 1)
+    }
+  }
+
+  public set<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
+  {
+    this.clear(true)
+    return this.add(filter)
+  }
+
+  public clear(shouldSkipChangeListener?:boolean):boolean
   {
     this._filterRules.length = 0
+    return this.triggerListener(shouldSkipChangeListener)
   }
 
   public run(allEntities:T[]):T[]

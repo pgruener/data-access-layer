@@ -6,15 +6,15 @@ import { FilterCollection } from './filter/FilterCollection';
 import { DataProvider } from './DataProvider';
 import { DataModel } from './DataModel';
 import { ApplyFilterMode } from './ApplyFilterMode';
+import { FilterCollectionChangeListener } from './filter/FilterCollectionChangeListener';
 
-export class DataCollection<T extends DataModel> implements DataCollectionChangeListener<T>, DataCollectionChangeProvider<T>
+export class DataCollection<T extends DataModel> implements DataCollectionChangeListener<T>, DataCollectionChangeProvider<T>, FilterCollectionChangeListener 
 {
-
   private static INSTANCE_COUNTER = 0
 
   protected allEntities:T[] = new Array()
   protected filteredEntities:T[] = new Array()
-  private _filters:FilterCollection<T> = new FilterCollection()
+  private _filters:FilterCollection<T>
   
   private changeProvider:DataCollectionChangeProvider<T>
   protected dataProvider:DataProvider<T>
@@ -33,18 +33,19 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     this.changeProvider = config.changeProvider
     config.changeProvider.addChangeListener(this)
 
-    if (config.filter)
-    {
-      this.addFilter(config.filter)
-    }
-
     if (config.changeListener)
     {
       this.addChangeListener(config.changeListener)
     }
 
+    this._filters = new FilterCollection(this, config.filter)
 
     this.storeEntitiesAndApplyFilters(config.initialEntities)
+  }
+
+  get filterCollection():FilterCollection<T>
+  {
+    return this._filters
   }
 
   protected storeEntitiesAndApplyFilters(entities:DataModel[], forceTriggerChildren?:boolean)
@@ -185,24 +186,9 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return this.filteredEntities[this.filteredEntities.length - 1]
   }
 
-  public clearFilters()
+  public filtersChanged = ():boolean =>
   {
-    this._filters.clear()
-  }
-
-  public addFilter<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
-  {
-    this._filters.add(filter)
-
-    this.dataProvider.filtersChanged(this.scopeName, this)
-
-    return this.applyFilters('normal')
-  }
-
-  public setFilter<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
-  {
-    this._filters.set(filter)
-
+    // TODO: Instead inform parent
     this.dataProvider.filtersChanged(this.scopeName, this)
 
     return this.applyFilters('normal')

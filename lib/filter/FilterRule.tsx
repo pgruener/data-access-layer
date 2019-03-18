@@ -14,7 +14,7 @@ export class FilterRule<T>
     '!=': (value1:T, value2:T) => { return value1 != value2 },
   }
 
-  protected fieldName:string
+  protected _fieldName:string
   protected value:T
   private compareFunction:CompareFunction<T>
   private comparator:FilterComparator|CompareFunction<T>
@@ -22,7 +22,7 @@ export class FilterRule<T>
   constructor(fieldName:string, comparator:FilterComparator|CompareFunction<T>, value:T)
   {
     this.comparator = comparator
-    this.fieldName = fieldName
+    this._fieldName = fieldName
     this.value = value
 
     if (typeof comparator == 'string')
@@ -33,6 +33,11 @@ export class FilterRule<T>
     {
       this.compareFunction = comparator
     }
+  }
+
+  get fieldName()
+  {
+    return this._fieldName
   }
 
   private isInside(dataModel:DataModel):boolean
