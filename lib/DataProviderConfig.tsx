@@ -1,12 +1,12 @@
-import {BackendConnector} from "./BackendConnector";
-import ActionUrlSet = require('./ActionUrlSet')
+import { BackendConnector } from "./BackendConnector";
+import { ActionUrlSet } from './ActionUrlSet'
 import { DataModel } from './DataModel';
-import {ActionUrlConfig} from "./ActionUrlConfig";
-import DataProviderScopeSet = require("./DataProviderScopeSet");
-import {ObjectMap} from "./ObjectMap";
+import { ActionUrlConfig } from "./ActionUrlConfig";
+import { DataProviderScopeSet } from "./DataProviderScopeSet";
+import { ObjectMap } from "./ObjectMap";
 import { Duration } from "./Duration";
 import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMoment";
-import {FilterCollection} from "./filter/FilterCollection";
+import { FilterCollection } from "./filter/FilterCollection";
 import { DataCollection } from "./DataCollection";
 import { DEFAULT_SCOPE_NAME } from './Constants';
 

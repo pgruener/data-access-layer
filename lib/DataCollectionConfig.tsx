@@ -1,10 +1,10 @@
-import DataCollectionChangeProvider = require('./DataCollectionChangeProvider')
-import {FilterRule} from './filter/FilterRule'
+import { DataCollectionChangeProvider } from './DataCollectionChangeProvider'
+import { FilterRule } from './filter/FilterRule'
 import { DataProvider } from './DataProvider';
-import DataCollectionChangeListener = require('./DataCollectionChangeListener');
+import { DataCollectionChangeListener } from './DataCollectionChangeListener';
 import { DataModel } from './DataModel';
 
-interface DataCollectionConfig<T extends DataModel>
+export interface DataCollectionConfig<T extends DataModel>
 {
   dataProvider:DataProvider<T>
   changeProvider:DataCollectionChangeProvider<T>
@@ -13,5 +13,3 @@ interface DataCollectionConfig<T extends DataModel>
   filter?:FilterRule<Object>|FilterRule<Object>[]
   changeListener?:DataCollectionChangeListener<T>
 }
-
-export = DataCollectionConfig

@@ -1,8 +1,6 @@
 import { DataModel } from "./DataModel";
 
-interface DataModelListener
+export interface DataModelListener
 {
   dataModelChanged:(dataModel:DataModel) => void
 }
-
-export = DataModelListener

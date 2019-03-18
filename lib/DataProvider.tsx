@@ -1,13 +1,13 @@
-import {DataCollection} from './DataCollection'
-import RootDataCollection = require('./RootDataCollection')
-import {DataProviderConfig} from './DataProviderConfig'
-import DataCollectionChangeProvider = require('./DataCollectionChangeProvider')
-import DataCollectionChangeListener = require('./DataCollectionChangeListener')
+import { DataCollection } from './DataCollection'
+import { RootDataCollection } from './RootDataCollection'
+import { DataProviderConfig } from './DataProviderConfig'
+import { DataCollectionChangeProvider } from './DataCollectionChangeProvider'
+import { DataCollectionChangeListener } from './DataCollectionChangeListener'
 import { DataCollectionOptions } from './DataCollectionOptions'
-import {DataCollectionFactory} from './DataCollectionFactory';
-import {ObjectMap} from "./ObjectMap";
-import DataProviderState = require('./DataProviderState');
-import ActionUrl = require('./ActionUrl');
+import { DataCollectionFactory } from './DataCollectionFactory';
+import { ObjectMap } from "./ObjectMap";
+import { DataProviderState } from './DataProviderState';
+import { ActionUrl } from './ActionUrl';
 import { DataModel } from './DataModel';
 import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
 
@@ -119,9 +119,16 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-  private shouldLoadData(url:string, selectionTriggerCollection:DataCollection<T>):boolean
-  {
     // TODO: Must be implemented with correct behavior.
+    private shouldLoadData(url:string, selectionTriggerCollection:DataCollection<T>):boolean
+  {
+    if (selectionTriggerCollection)
+    {
+      // TODO: Check for filter
+    }
+
+    // TODO: Check for time span/refetch interval...
+
     return true
   }
 

@@ -1,9 +1,7 @@
-import DataProviderScope = require("./DataProviderScope");
+import { DataProviderScope } from "./DataProviderScope";
 
-interface DataProviderScopeSet
+export interface DataProviderScopeSet
 {
   index?: DataProviderScope
   [s:string]: DataProviderScope
 }
-
-export = DataProviderScopeSet

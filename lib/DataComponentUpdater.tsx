@@ -1,6 +1,6 @@
 import { DataCollection } from './DataCollection'
-import DataModelListener = require("./DataModelListener");
-import DataCollectionChangeListener = require("./DataCollectionChangeListener");
+import { DataModelListener } from "./DataModelListener";
+import { DataCollectionChangeListener } from "./DataCollectionChangeListener";
 import { DataModel } from "./DataModel";
 
 export class DataComponentUpdater implements DataModelListener, DataCollectionChangeListener<DataModel>

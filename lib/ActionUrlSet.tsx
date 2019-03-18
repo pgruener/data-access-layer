@@ -1,10 +1,10 @@
-import ActionUrl = require("./ActionUrl");
-import {ActionUrlConfig} from "./ActionUrlConfig";
+import { ActionUrl } from "./ActionUrl";
+import { ActionUrlConfig } from "./ActionUrlConfig";
 import { DataModel } from "./DataModel";
 import { HttpMethod } from "./HttpMethod";
 import { ObjectMap } from "./ObjectMap";
 
-class ActionUrlSet
+export class ActionUrlSet
 {
   private actionUrls:{[s:string]:ActionUrl} = {}
   private verbMethodMap:{[s:string]:HttpMethod} = {
@@ -72,7 +72,4 @@ class ActionUrlSet
 
     return { method: actionUrl.method, url: url }
   }
-
 }
-
-export = ActionUrlSet

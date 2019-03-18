@@ -1,4 +1,4 @@
-import ActionUrl = require('./ActionUrl')
+import { ActionUrl } from './ActionUrl'
 
 export interface ActionUrlConfig
 {

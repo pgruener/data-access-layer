@@ -1,7 +1,7 @@
-import DataModelListener = require('./DataModelListener')
-import {DataProviderConfig} from './DataProviderConfig';
-import {DataProvider} from './DataProvider';
-import {ObjectMap} from "./ObjectMap";
+import { DataModelListener } from './DataModelListener'
+import { DataProviderConfig } from './DataProviderConfig';
+import { DataProvider } from './DataProvider';
+import { ObjectMap } from "./ObjectMap";
 
 import { CLIENT_ID_ATTRIBUTE } from './Constants';
 

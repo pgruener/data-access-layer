@@ -1,8 +1,8 @@
-import {DataCollection} from './DataCollection'
+import { DataCollection } from './DataCollection'
 import { DataModel } from './DataModel';
-import DataModelChangeListener = require("./DataModelListener");
+import { DataModelListener } from "./DataModelListener";
 
-class RootDataCollection<T extends DataModel> extends DataCollection<T> implements DataModelChangeListener
+export class RootDataCollection<T extends DataModel> extends DataCollection<T> implements DataModelListener
 {
   public addDataModel(dataModel:T)
   {
@@ -37,5 +37,3 @@ class RootDataCollection<T extends DataModel> extends DataCollection<T> implemen
     }
   }
 }
-
-export = RootDataCollection

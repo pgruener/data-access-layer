@@ -1,4 +1,4 @@
-import {FilterRule} from "./FilterRule";
+import { FilterRule } from "./FilterRule";
 import { DataModel } from '../DataModel';
 
 export class FilterCollection<T extends DataModel>

@@ -1,4 +1,4 @@
-interface ValueRange<T>
+export interface ValueRange<T>
 {
   startValue:T
   endValue:T
