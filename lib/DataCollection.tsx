@@ -185,6 +185,11 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return this.filteredEntities[this.filteredEntities.length - 1]
   }
 
+  public clearFilters()
+  {
+    this._filters.clear()
+  }
+
   public addFilter<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
   {
     this._filters.add(filter)

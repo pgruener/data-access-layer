@@ -16,7 +16,7 @@ export class FilterCollection<T extends DataModel>
     this.add(filter)
   }
 
-  private clear()
+  public clear()
   {
     this._filterRules.length = 0
   }
