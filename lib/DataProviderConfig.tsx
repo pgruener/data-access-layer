@@ -9,11 +9,16 @@ import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMo
 import { FilterCollection } from "./filter/FilterCollection";
 import { DataCollection } from "./DataCollection";
 import { DEFAULT_SCOPE_NAME } from './Constants';
+import { DataProviderScope } from "./DataProviderScope";
+import { FilterMarking } from "./filter/FilterMarking";
+import { NotEnoughFiltersError } from "./filter/NotEnoughFiltersError";
+import { TooManyFiltersError } from "./filter/TooManyFiltersError";
 
 export abstract class DataProviderConfig
 {
   private _backendConnector:BackendConnector
   private _dataProviderName:string
+  protected searchPropertyWhitelist:String[] = undefined
 
   constructor(dataProviderName:string, backendConnector:BackendConnector)
   {
@@ -22,6 +27,162 @@ export abstract class DataProviderConfig
   }
 
   public abstract getScopes:() => DataProviderScopeSet
+
+  public getNewUrlVariableMatcher()
+  {
+    return  /\$\{([a-z\.]*)\}/gm
+  }
+
+  public extractVariableAndModifier(variableWithModifier:string):{variable: string, modifier: string}
+  {
+    let variableModifierSplitted = variableWithModifier.split('.')
+
+    return {
+      variable: variableModifierSplitted[0].toString(),
+      modifier: (variableModifierSplitted.length > 1) ? variableModifierSplitted[1] : null
+    }
+  }
+
+  public findReplacement<T extends DataModel>(variableWithModifier:string, filterMarking:FilterMarking<T>):Object
+  {
+    let variableModifierSplitted = this.extractVariableAndModifier(variableWithModifier)
+
+    switch (variableModifierSplitted.modifier)
+    {
+      case null:
+      {
+        let filterMarker = filterMarking.findEqualFilter(variableModifierSplitted.variable)
+        switch (filterMarker.length)
+        {
+          case 0:
+            throw new NotEnoughFiltersError(`There must be a FilterRule using equals comparator for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
+
+          case 1:
+            return filterMarker[0].use().value
+
+          default:
+            throw new TooManyFiltersError(`There must be exactly one FilterRule using equals comparator for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
+        }
+  
+      }
+      case 'low': /* fall through */
+      case 'high':
+      {
+        let filterMarker = filterMarking.findInFilter(variableModifierSplitted.variable)
+
+        switch (filterMarker.length)
+        {
+          case 0:
+            throw new NotEnoughFiltersError(`For the use of the modifier '${variableModifierSplitted.modifier}' a FilterRuleIn must be added for field '${variableModifierSplitted.variable}' to the DataCollection.`)
+          
+          case 1:
+            let range = filterMarker[0].use().valueRange
+
+            if (variableModifierSplitted.modifier == 'low')
+            {
+              return range.startValue
+            }
+            else if (variableModifierSplitted.modifier == 'high')
+            {
+              return range.endValue
+            }
+            
+          default:
+            throw new TooManyFiltersError(`For the use of the modifier '${variableModifierSplitted.modifier}' a exactly one FilterRuleIn is allowed for field '${variableModifierSplitted.variable}' to the DataCollection.`)
+        }
+      }
+      default:
+      {
+        throw new Error(`Variable modifier with name '${variableModifierSplitted.modifier}' not implemented.`)
+      }
+    }
+  }
+
+  public buildReplacementMap<T extends DataModel>(variables:String[], filterMarking:FilterMarking<T>):ObjectMap
+  {
+    let map:ObjectMap = {}
+
+    variables.forEach((variable) => {
+      map[variable.toString()] = this.findReplacement(variable.toString(), filterMarking)
+    })
+
+    return map
+  }
+
+  private matchUrlAndCycle(url:string, callback:(match:RegExpExecArray) => void)
+  {
+    let variableMatcher = this.getNewUrlVariableMatcher()
+
+    let match
+    while (match = variableMatcher.exec(url))
+    {
+      callback(match)
+    }
+  }
+
+  public extractVariablesFromUrl(url:string):String[]
+  {
+    let variables:String[] = []
+
+    this.matchUrlAndCycle(url, (match) => {
+      variables.push(match[1])
+    })
+
+    return variables
+  }
+
+  public replaceVariablesInUrl(url:string, map:ObjectMap):string
+  {
+    this.matchUrlAndCycle(url, (match) => {
+      url = url.replace(match[0], map[match[1]].toString())
+    })
+
+    return url
+  }
+
+  public getScope(scopeName:string):DataProviderScope
+  {
+    return this.getScopes()[scopeName]
+  }
+
+  public hasUrl(scopeName:string):boolean
+  {
+    return this.getUrl(scopeName) != undefined
+  }
+
+  public getUrl(scopeName:string):string
+  {
+    let scopeOrUrl = this.getScope(scopeName)
+
+    if (typeof scopeOrUrl == 'string')
+    {
+      return scopeOrUrl as string
+    }
+    else
+    {
+      return (scopeOrUrl as {url:string})['url']
+    }
+  }
+
+  public getSearchParamName()
+  {
+    return 'search'
+  }
+
+  public getInitialEntities(scopeName:string):ObjectMap[]
+  {
+    let scopeOrUrl = this.getScope(scopeName)
+
+    if (typeof scopeOrUrl != 'string')
+    {
+      let url = (scopeOrUrl as {url:string})['url']
+
+      return (scopeOrUrl as {initialEntities:[ObjectMap]})['initialEntities']
+    }
+
+    return null
+  }
+
 
   public getActionUrlConfig = ():ActionUrlConfig =>
   {
@@ -46,18 +207,6 @@ export abstract class DataProviderConfig
     return [ 'id' ]
   }
 
-  /**
-   * The framework only loads data from its data sources, if [FilterRules]{@link FilterRule} are applied,
-   * that touch selection relevant attributes or no selection relevant attributes exists.
-   * 
-   * @method getSelectionRelevantAttributeNames
-   * @returns {string[]} attributes may be overwritten by subclasses. Default [ 'id' ]
-   */
-  public getSelectionRelevantAttributeNames = ():string[] =>
-  {
-    return [ 'id' ]
-  }
-
   public getNewInstanceDataModelScopeNames = ():string[] =>
   {
     return [ DEFAULT_SCOPE_NAME ]
@@ -67,11 +216,22 @@ export abstract class DataProviderConfig
     return 'on_first_collection'
   }
 
-  public getDataLifetime = ():Duration => {
-    return new Duration(1000)
+  /**
+   * Lifetime of cache, before fetch data again from its sources.
+   * @method getDataCacheLifetime
+   * @return {Duration}
+   */
+  public getDataCacheLifetime = ():Duration => {
+    return new Duration(6000 * 10 * 10)
   }
 
-  getRefetchInterval = ():Duration =>
+  /**
+   * The data will automatically refetch from its sources after the refetch interval.
+   * @todo
+   * @method getRefetchInterval
+   * @return {Duration}
+   */
+  public getRefetchInterval = ():Duration =>
   {
     return new Duration(1000)
   }
@@ -90,30 +250,101 @@ export abstract class DataProviderConfig
     return null
   }
 
-  /**
-   * Handles the decision, if complex selection url computation should get skipped.
-   * 
-   * @name shouldSkipSelectionUrlComputation
-   * @returns {boolean} <code>true</code>, if computation should be skipped, <code>false</code> otherwise. 
-   */
-  public shouldSkipSelectionUrlComputation = ():boolean => {
-    let attributeNames = this.getSelectionRelevantAttributeNames()
-    return attributeNames == undefined || attributeNames == null || attributeNames.length == 0
+  public shouldSkipSearchProperty(propertyName:string):boolean
+  {
+    if (this.searchPropertyWhitelist === undefined)
+    {
+      return false
+    }
+
+    return this.searchPropertyWhitelist.indexOf(propertyName) === -1
   }
 
-  public computeSelectionUrl = <T extends DataModel>(url:string, selectionTriggerCollection:DataCollection<T>):string => {
+  public getSearchPropertyWhitelist():String[]
+  {
+    return this.searchPropertyWhitelist
+  }
 
-    if (this.shouldSkipSelectionUrlComputation())
+  /**
+   * Appends the filters to the given url
+   * @method appendFiltersToUrl
+   */
+  public appendFiltersToUrl = <T extends DataModel>(url:string, filterMarking:FilterMarking<T>):string =>
+  {
+    let searchParamContent = ''
+
+    let isSearchParamContentPresent = false
+    filterMarking.getUnusedFilters().forEach((filterRule) => {
+
+      if (!this.shouldSkipSearchProperty(filterRule.fieldName))
+      {
+        if (isSearchParamContentPresent)
+        {
+          searchParamContent += '&'  
+        }
+  
+        searchParamContent += filterRule.asUrlString()
+        isSearchParamContentPresent = true
+      }
+    })
+
+    if (searchParamContent.length == 0)
     {
       return url
     }
+    else
+    {
+      let qmOrAmp = (url.indexOf('?') === -1) ? '?' : '&'
+      return `${url}${qmOrAmp}${this.getSearchParamName()}=${encodeURIComponent(searchParamContent)}`
+    }
+  }
 
-    let dateBegin = new Date(2019,2,14,0,0,0,0)
-    let dateEnd = new Date(2019,2,15,0,0,0,0)
+  public computeSelectionUrl = <T extends DataModel>(scopeName:string, selectionTriggerCollection?:DataCollection<T>):string => {
+    
+    let url = this.getUrl(scopeName)
+    let variables = this.extractVariablesFromUrl(url)
+    let areVariablesAvailable = variables.length > 0
 
-    return url.replace('${date_begin}', dateBegin.toString()).replace('${date_end}', dateEnd.toString())
 
-    // TODO: Existing filters as url-param in default implementation, but just for selection relevant fields
+    if (!selectionTriggerCollection)
+    {
+      if (areVariablesAvailable)
+      {
+        return null
+        //throw new Error('Variables cannot be filled, without connected collection.')
+      }
+      else
+      {
+        return url
+      }
+    }
+    else
+    {
+      let filterMarking = new FilterMarking(selectionTriggerCollection.topCollection)
+
+
+      if (areVariablesAvailable)
+      {
+        let map
+        try
+        {
+          map = this.buildReplacementMap(variables, filterMarking)
+        }
+        catch (e)
+        {
+          if (e instanceof NotEnoughFiltersError)
+          {
+            return null
+          }
+
+          throw e
+        }
+
+        url = this.replaceVariablesInUrl(url, map)
+      }
+        
+      return this.appendFiltersToUrl(url, filterMarking)
+    }
   }
 
   /**

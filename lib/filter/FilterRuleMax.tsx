@@ -24,6 +24,6 @@ export class FilterRuleMax extends FilterRule<String>
 
   asUrlString()
   {
-    return `max(${this.fieldName})`
+    return encodeURIComponent(`max(${this.fieldName})`)
   }
 }

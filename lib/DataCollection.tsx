@@ -19,6 +19,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
   private changeProvider:DataCollectionChangeProvider<T>
   protected dataProvider:DataProvider<T>
   private scopeName:string
+  private _topCollection:DataCollection<T>
 
   private changeListeners:Array<DataCollectionChangeListener<T>> = new Array()
 
@@ -38,9 +39,17 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
       this.addChangeListener(config.changeListener)
     }
 
+    this._topCollection = (config.topCollection == null) ? this : config.topCollection
+
+
     this._filters = new FilterCollection(this, config.filter)
 
     this.storeEntitiesAndApplyFilters(config.initialEntities)
+  }
+
+  get topCollection():DataCollection<T>
+  {
+    return this._topCollection
   }
 
   get filterCollection():FilterCollection<T>
@@ -48,9 +57,14 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return this._filters
   }
 
-  protected storeEntitiesAndApplyFilters(entities:DataModel[], forceTriggerChildren?:boolean)
+  private storeEntities(entities:DataModel[])
   {
     this.allEntities = entities || new Array()
+  }
+
+  protected storeEntitiesAndApplyFilters(entities:DataModel[], forceTriggerChildren?:boolean)
+  {
+    this.storeEntities(entities)
 
     this.applyFilters(forceTriggerChildren ? 'force' : 'normal')
   }
@@ -188,20 +202,21 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   public filtersChanged = ():boolean =>
   {
-    // TODO: Instead inform parent
     this.dataProvider.filtersChanged(this.scopeName, this)
 
     return this.applyFilters('normal')
   }
 
+
+
   public createCopy():DataCollection<T>
   {
-    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this.changeProvider, initialEntities: this.allEntities, filter: this.filters.filterRules, scope: this.scopeName})
+    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this.changeProvider, initialEntities: this.allEntities, filter: this.filters.filterRules, scope: this.scopeName, topCollection: this.topCollection})
   }
 
   public createSubCollection(filter:FilterRule<Object>|FilterRule<Object>[]):DataCollection<T>
   {
-    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this, initialEntities: this.filteredEntities, filter: filter, scope: this.scopeName})
+    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this, initialEntities: this.filteredEntities, filter: filter, scope: this.scopeName, topCollection: this.topCollection})
   }
 
   public getFilteredDataModels()

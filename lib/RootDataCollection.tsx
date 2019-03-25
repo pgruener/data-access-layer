@@ -15,6 +15,29 @@ export class RootDataCollection<T extends DataModel> extends DataCollection<T> i
     }
   }
 
+  public mergeEntities(newEntities:T[])
+  {
+    let map:{[s:string]: T} = {}
+    this.allEntities.forEach((entity) => {
+      map[entity.computeIdentityHashCode()] = entity
+    })
+
+    newEntities.forEach((entity:T) => {
+      let availableEntity = map[entity.computeIdentityHashCode()]
+      if (availableEntity)
+      {
+        availableEntity.mergeModel(entity)
+      }
+      else
+      {
+        entity.addListener(this)
+        this.allEntities = this.allEntities.concat(entity)
+      }
+    })
+
+    this.storeEntitiesAndApplyFilters(this.allEntities)
+  }
+
   public setEntities(entities:T[])
   {
     this.allEntities.forEach((entity:T) => {

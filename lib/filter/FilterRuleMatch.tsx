@@ -11,6 +11,6 @@ export class FilterRuleMatch extends FilterRule<String>
 
   asUrlString()
   {
-    return `match(${this.fieldName}, ${this.value})`
+    return encodeURIComponent(`match(${this.fieldName}, ${this.value})`)
   }
 }

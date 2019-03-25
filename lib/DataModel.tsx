@@ -18,6 +18,7 @@ export class DataModel
   private instanceNr:number
   private static INSTANCE_COUNTER = 0
   private changeIntervalId:number
+  private conflictingModel:DataModel
 
 
   constructor(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean)
@@ -189,8 +190,13 @@ export class DataModel
     return changed
   }
 
-  public setProperties(map:ObjectMap)
+  public setProperties(map:ObjectMap, shouldClearProperties?:boolean)
   {
+    if (shouldClearProperties)
+    {
+      this.properties = {}
+    }
+
     let anythingChanged = false
 
     for (var key in map)
@@ -217,6 +223,33 @@ export class DataModel
   public mapDataOut(objectMap:ObjectMap):ObjectMap
   {
     return objectMap
+  }
+
+  private hasChanges()
+  {
+    return Object.keys(this.changedProperties).length > 0
+  }
+
+  private setConflict(conflictingModel:DataModel)
+  {
+    this.conflictingModel = conflictingModel
+  }
+
+  mergeModel<T extends DataModel>(dataModel:T)
+  {
+    let updatedAtProperty = this.dataProvider.config.getUpdatedAtFieldName()
+
+    if (new Date(this.getProperty(updatedAtProperty)) < new Date(dataModel.getProperty(updatedAtProperty)))
+    {
+      if (this.hasChanges())
+      {
+        this.setConflict(dataModel)
+      }
+      else
+      {
+        this.setProperties(dataModel.properties, true)
+      }
+    }
   }
 
   mergeChanges(objectMap:ObjectMap)

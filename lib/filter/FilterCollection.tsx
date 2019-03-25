@@ -10,7 +10,7 @@ export class FilterCollection<T extends DataModel>
   constructor(ownerCollection:DataCollection<T>, filter?:FilterRule<Object>|FilterRule<Object>[])
   {
     this.ownerCollection = ownerCollection
-    this.add(filter)
+    this.add(filter, true)
   }
 
   private triggerListener(shouldSkipChangeListener?:boolean):boolean
@@ -23,10 +23,15 @@ export class FilterCollection<T extends DataModel>
     return false
   }
 
-  public add<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
+  public add<T>(filter:FilterRule<T>|FilterRule<T>[], shouldSkipChangeListener?:boolean):boolean
   {
+    if (filter === undefined)
+    {
+      return false
+    }
+
     this._filterRules = this._filterRules.concat(filter)
-    return this.triggerListener()
+    return this.triggerListener(shouldSkipChangeListener)
   }
 
   public remove<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean

@@ -3,6 +3,7 @@ import { FilterRule } from './filter/FilterRule'
 import { DataProvider } from './DataProvider';
 import { DataCollectionChangeListener } from './DataCollectionChangeListener';
 import { DataModel } from './DataModel';
+import { DataCollection } from './DataCollection';
 
 export interface DataCollectionConfig<T extends DataModel>
 {
@@ -12,4 +13,5 @@ export interface DataCollectionConfig<T extends DataModel>
   scope:string
   filter?:FilterRule<Object>|FilterRule<Object>[]
   changeListener?:DataCollectionChangeListener<T>
+  topCollection:DataCollection<T>
 }

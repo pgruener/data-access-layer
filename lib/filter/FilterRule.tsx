@@ -15,15 +15,15 @@ export class FilterRule<T>
   }
 
   protected _fieldName:string
-  protected value:T
+  protected _value:T
   private compareFunction:CompareFunction<T>
-  private comparator:FilterComparator|CompareFunction<T>
+  private _comparator:FilterComparator|CompareFunction<T>
 
   constructor(fieldName:string, comparator:FilterComparator|CompareFunction<T>, value:T)
   {
-    this.comparator = comparator
+    this._comparator = comparator
     this._fieldName = fieldName
-    this.value = value
+    this._value = value
 
     if (typeof comparator == 'string')
     {
@@ -35,6 +35,16 @@ export class FilterRule<T>
     }
   }
 
+  get comparator()
+  {
+    return this._comparator
+  }
+
+  get value()
+  {
+    return this._value
+  }
+
   get fieldName()
   {
     return this._fieldName
@@ -44,7 +54,7 @@ export class FilterRule<T>
   {
     let value = dataModel.getPropertyForFilter(this.fieldName) as T
 
-    return this.compareFunction(value, this.value)
+    return this.compareFunction(value, this._value)
   }
 
   public filter = (dataModels:DataModel[]):DataModel[] =>
@@ -63,7 +73,7 @@ export class FilterRule<T>
 
   asUrlString()
   {
-    return `${this.fieldName}${this.comparator}${this.value}`
+    return `${this.fieldName}${encodeURIComponent(this.comparator.toString())}${encodeURIComponent(this._value.toString())}`
   }
 }
 

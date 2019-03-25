@@ -10,6 +10,7 @@ import { DataProviderState } from './DataProviderState';
 import { ActionUrl } from './ActionUrl';
 import { DataModel } from './DataModel';
 import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
+import { FilterRule } from './filter/FilterRule';
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {
   private _state:DataProviderState = 'not_inited'
@@ -20,6 +21,8 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   private _allEntities:{[s: string]: T} = {}
   private changeListeners:Array<DataCollectionChangeListener<T>> = new Array()
   private dataModelClass:{ new(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean): T, computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string }
+
+  private requestCacheTimeouts:{ [url:string]: number } = {}
 
   
   constructor(dataCollectionFactory:DataCollectionFactory, config:DataProviderConfig, dataModelClass:{ new(properties:ObjectMap): T, computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string })
@@ -33,6 +36,12 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   get config():DataProviderConfig
   {
     return this._config
+  }
+
+  public hasData<T>(filterRule:FilterRule<T>):boolean
+  {
+    // TODO: Implement correctly
+    return false
   }
 
   dataCollectionChanged(dataCollection:DataCollection<T>)
@@ -61,44 +70,27 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-  private computeIndexUrl(scopeName:string):string
+
+  private loadData(scopeName:string, collection?:DataCollection<T>)
   {
-    let scopeOrUrl = this.config.getScopes()[scopeName]
-
-    let url
-
-    if (typeof scopeOrUrl == 'string')
+    if (this.config.hasUrl(scopeName))
     {
-      url = scopeOrUrl as string
-    }
-    else
-    {
-      url = (scopeOrUrl as {url:string})['url']
-
-      let initialEntities = (scopeOrUrl as {initialEntities:[ObjectMap]})['initialEntities']
+      let initialEntities = this.config.getInitialEntities(scopeName)
 
       if (initialEntities)
       {
         initialEntities.forEach((objectMap) => {
           this.createDataModel(objectMap)
         })
-
+  
         // TODO: Wie kriegen diese initialen Einträge aus dem JSON die Verbindung zu einem Scope?
       }
-    }
 
-    return url
-  }
+      let url = this.config.computeSelectionUrl(scopeName, collection)
 
-  private loadData(scopeName:string, collection?:DataCollection<T>)
-  {
-    let url = this.computeIndexUrl(scopeName)
-
-    if (url)
-    {
       if (this.shouldLoadData(url, collection))
       {
-        url = this.config.computeSelectionUrl(url, collection)
+        this.requestCacheTimeouts[url] = Date.now() + this.config.getDataCacheLifetime().getMilliSeconds()
 
         this.config.backendConnector.get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
     
@@ -111,7 +103,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
             })
 
             // FIXME: Instead mergeEntities
-            this.buildRootDataCollection(scopeName).setEntities(entities)
+            this.buildRootDataCollection(scopeName).mergeEntities(entities)
           }
         })
   
@@ -119,17 +111,21 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-    // TODO: Must be implemented with correct behavior.
-    private shouldLoadData(url:string, selectionTriggerCollection:DataCollection<T>):boolean
+  private shouldLoadData(url:string, selectionTriggerCollection:DataCollection<T>):boolean
   {
-    if (selectionTriggerCollection)
+    if (url == null)
     {
-      // TODO: Check for filter
+      return false
+    }
+    
+    let timeout:number = this.requestCacheTimeouts[url]
+    
+    if (!timeout)
+    {
+      return true
     }
 
-    // TODO: Check for time span/refetch interval...
-
-    return true
+    return Date.now() > timeout
   }
 
   public delete(dataModel:DataModel)
@@ -292,7 +288,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   {
     if (!this.hasRootDataCollection(scopeName))
     {
-      this.rootDataCollectionsByScope[scopeName] = new RootDataCollection({ dataProvider: this, changeProvider: this, scope: scopeName })
+      this.rootDataCollectionsByScope[scopeName] = new RootDataCollection({ dataProvider: this, changeProvider: this, scope: scopeName, topCollection: null })
     }
 
     return this.rootDataCollectionsByScope[scopeName]
@@ -319,7 +315,8 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
       changeProvider: rootDataCollection,
       scope: options.scope,
       initialEntities: rootDataCollection.getFilteredDataModels(),
-      changeListener: options.dataCollectionChangeListener
+      changeListener: options.dataCollectionChangeListener,
+      topCollection: null
     })
 
     if (shouldLoad)
