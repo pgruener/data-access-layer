@@ -230,6 +230,11 @@ export class DataModel
     return Object.keys(this.changedProperties).length > 0
   }
 
+  public hasConflict()
+  {
+    return this.conflictingModel != undefined
+  }
+
   private setConflict(conflictingModel:DataModel)
   {
     this.conflictingModel = conflictingModel

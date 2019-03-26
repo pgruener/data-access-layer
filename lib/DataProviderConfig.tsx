@@ -13,6 +13,9 @@ import { DataProviderScope } from "./DataProviderScope";
 import { FilterMarking } from "./filter/FilterMarking";
 import { NotEnoughFiltersError } from "./filter/NotEnoughFiltersError";
 import { TooManyFiltersError } from "./filter/TooManyFiltersError";
+import { FilterRuleIn } from "./filter/FilterRuleIn";
+import { FilterRule } from "./filter/FilterRule";
+import { FilterRuleMarker } from "./filter/FilterRuleMarker";
 
 export abstract class DataProviderConfig
 {
@@ -30,71 +33,94 @@ export abstract class DataProviderConfig
 
   public getNewUrlVariableMatcher()
   {
-    return  /\$\{([a-z\.]*)\}/gm
+    return  /\$\{([a-z\.\_]*)\}/gm
   }
 
   public extractVariableAndModifier(variableWithModifier:string):{variable: string, modifier: string}
   {
     let variableModifierSplitted = variableWithModifier.split('.')
 
+    let computedModifier = (variableModifierSplitted.length > 1) ? variableModifierSplitted[1] : '=='
+
+    if (computedModifier == 'gte')
+    {
+      computedModifier = '>='
+    }
+    else if (computedModifier == 'lte')
+    {
+      computedModifier = '<='
+    }
+
     return {
       variable: variableModifierSplitted[0].toString(),
-      modifier: (variableModifierSplitted.length > 1) ? variableModifierSplitted[1] : null
+      modifier: computedModifier
     }
+  }
+
+
+
+  private markingFinderByModifier(modifier:string):(filterRule:FilterRule<Object>) => boolean
+  {
+    switch (modifier)
+    {
+      case '==': /* fall through */
+      case '>=': /* fall through */
+      case '<=':
+      {
+        return (filterRule:FilterRule<Object>):boolean => {
+          return filterRule.comparator == modifier
+        }
+      }
+
+      case 'low': /* fall through */
+      case 'high':
+      {
+        return (filterRule:FilterRule<Object>):boolean => {
+          return filterRule instanceof FilterRuleIn
+        }
+      }
+
+      default:
+      {
+        throw new Error(`Variable modifier with name '${modifier}' not implemented.`)
+      }
+    }
+  }
+
+  private getValueByWithModifier(filterRuleMarker:FilterRuleMarker<FilterRule<Object>>, modifier:string)
+  {
+    let filterRule = filterRuleMarker.use()
+
+    switch (modifier)
+    {
+      default:
+        return filterRule.value
+      case 'low':
+        return (filterRule as FilterRuleIn<Object>).valueRange.startValue
+      case 'high':
+        return (filterRule as FilterRuleIn<Object>).valueRange.endValue
+    }
+
   }
 
   public findReplacement<T extends DataModel>(variableWithModifier:string, filterMarking:FilterMarking<T>):Object
   {
     let variableModifierSplitted = this.extractVariableAndModifier(variableWithModifier)
 
-    switch (variableModifierSplitted.modifier)
+    let markingFinder = this.markingFinderByModifier(variableModifierSplitted.modifier)
+
+    let filterMarker = filterMarking.filterMarkersForField(variableModifierSplitted.variable, markingFinder)
+
+    switch (filterMarker.length)
     {
-      case null:
-      {
-        let filterMarker = filterMarking.findEqualFilter(variableModifierSplitted.variable)
-        switch (filterMarker.length)
-        {
-          case 0:
-            throw new NotEnoughFiltersError(`There must be a FilterRule using equals comparator for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
+      case 0:
+        throw new NotEnoughFiltersError(`There must be a FilterRule supporting modifier '${variableModifierSplitted.modifier}' for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
 
-          case 1:
-            return filterMarker[0].use().value
+      case 1:
+        return this.getValueByWithModifier(filterMarker[0], variableModifierSplitted.modifier)
 
-          default:
-            throw new TooManyFiltersError(`There must be exactly one FilterRule using equals comparator for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
-        }
-  
-      }
-      case 'low': /* fall through */
-      case 'high':
-      {
-        let filterMarker = filterMarking.findInFilter(variableModifierSplitted.variable)
-
-        switch (filterMarker.length)
-        {
-          case 0:
-            throw new NotEnoughFiltersError(`For the use of the modifier '${variableModifierSplitted.modifier}' a FilterRuleIn must be added for field '${variableModifierSplitted.variable}' to the DataCollection.`)
-          
-          case 1:
-            let range = filterMarker[0].use().valueRange
-
-            if (variableModifierSplitted.modifier == 'low')
-            {
-              return range.startValue
-            }
-            else if (variableModifierSplitted.modifier == 'high')
-            {
-              return range.endValue
-            }
-            
-          default:
-            throw new TooManyFiltersError(`For the use of the modifier '${variableModifierSplitted.modifier}' a exactly one FilterRuleIn is allowed for field '${variableModifierSplitted.variable}' to the DataCollection.`)
-        }
-      }
       default:
-      {
-        throw new Error(`Variable modifier with name '${variableModifierSplitted.modifier}' not implemented.`)
-      }
+        throw new TooManyFiltersError(`There must be exactly one FilterRule supporting modifier '${variableModifierSplitted.modifier}' for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
     }
   }
 

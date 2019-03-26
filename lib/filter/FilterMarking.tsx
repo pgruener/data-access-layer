@@ -40,19 +40,9 @@ export class FilterMarking<T extends DataModel>
     return this.filterMarkersForField(fieldName, this.inFilter) as FilterRuleMarker<FilterRuleIn<Object>>[]
   }
 
-  public findEqualFilter(fieldName:string):FilterRuleMarker<FilterRule<Object>>[]
-  {
-    return this.filterMarkersForField(fieldName, this.equalFilter)
-  }
-
   private inFilter(filterRule:FilterRule<Object>):boolean
   {
     return filterRule instanceof FilterRuleIn
-  }
-
-  private equalFilter(filterRule:FilterRule<Object>):boolean
-  {
-    return (filterRule.comparator == '==') 
   }
 
   public getUnusedFilters():FilterRule<Object>[]
