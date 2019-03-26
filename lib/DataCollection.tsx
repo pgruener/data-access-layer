@@ -25,6 +25,8 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   private instanceNr:number
 
+  private _sorting:string|{(t1:T, t2:T) : number}
+
   constructor(config:DataCollectionConfig<T>)
   {
     this.instanceNr = ++DataCollection.INSTANCE_COUNTER
@@ -32,6 +34,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     this.scopeName = config.scope
     this.dataProvider = config.dataProvider
     this.changeProvider = config.changeProvider
+    this._sorting = config.sorting
     config.changeProvider.addChangeListener(this)
 
     if (config.changeListener)
@@ -45,6 +48,44 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     this._filters = new FilterCollection(this, config.filter)
 
     this.storeEntitiesAndApplyFilters(config.initialEntities)
+  }
+
+  setSorting(_sorting:string|{(t1:T, t2:T) : number}, once?:boolean)
+  {
+    if (_sorting != this._sorting)
+    {
+      this.filteredEntities = this.sort(this.filteredEntities, _sorting)
+
+      if (once)
+      {
+        this._sorting = undefined
+      }
+      else
+      {
+        this._sorting = _sorting
+      }
+    }
+  }
+
+  private sort(entities:T[], sorting:string|{ (t1:T, t2:T):number }):T[]
+  {
+    if (typeof sorting == 'string')
+    {
+      return entities.sort((t1:T, t2:T) => {
+        let x = t1.getPropertyForFilter(sorting.toString())
+        let y = t2.getPropertyForFilter(sorting.toString())
+
+        return  x - y
+      })
+    }
+    else if (sorting instanceof Function)
+    {
+      return entities.sort(sorting)
+    }
+    else
+    {
+      return entities.slice(0)
+    }
   }
 
   get topCollection():DataCollection<T>
@@ -121,7 +162,7 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
     let somethingChanged =  applyFilterMode == 'force' || this.filteredEntitiesChanged(filteredEntities)
 
-    this.filteredEntities = filteredEntities
+    this.filteredEntities = this.sort(filteredEntities, this._sorting)
 
     if (somethingChanged && applyFilterMode != 'skip')
     {
@@ -172,18 +213,9 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   public getEntities(sorting?:string|{ (t1:T, t2:T):number }):T[]
   {
-    if (typeof sorting == 'string')
+    if (sorting != undefined)
     {
-      return this.filteredEntities.sort((t1:T, t2:T) => {
-        let x = t1.getPropertyForFilter(sorting.toString())
-        let y = t2.getPropertyForFilter(sorting.toString())
-
-        return  x - y
-      })
-    }
-    else if (sorting instanceof Function)
-    {
-      return this.filteredEntities.sort(sorting)
+      return this.sort(this.filteredEntities, sorting)
     }
     else
     {
@@ -242,8 +274,6 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   protected triggerListeners(forceTriggerChildren?:boolean)
   {
-    // console.log('DataCollection - trigger listeners', this.instanceNr, forceTriggerChildren)
-
     this.changeListeners.forEach((listener) => {
       listener.dataCollectionChanged(this, forceTriggerChildren)
     })

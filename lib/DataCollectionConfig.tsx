@@ -14,4 +14,5 @@ export interface DataCollectionConfig<T extends DataModel>
   filter?:FilterRule<Object>|FilterRule<Object>[]
   changeListener?:DataCollectionChangeListener<T>
   topCollection:DataCollection<T>
+  sorting?:string|{(t1:T, t2:T):number}
 }
