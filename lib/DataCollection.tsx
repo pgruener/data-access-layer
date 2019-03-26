@@ -170,9 +170,25 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return this.instanceNr
   }
 
-  public getEntities():T[]
+  public getEntities(sorting?:string|{ (t1:T, t2:T):number }):T[]
   {
-    return this.filteredEntities.slice(0)
+    if (typeof sorting == 'string')
+    {
+      return this.filteredEntities.sort((t1:T, t2:T) => {
+        let x = t1.getPropertyForFilter(sorting.toString())
+        let y = t2.getPropertyForFilter(sorting.toString())
+
+        return  x - y
+      })
+    }
+    else if (sorting instanceof Function)
+    {
+      return this.filteredEntities.sort(sorting)
+    }
+    else
+    {
+      return this.filteredEntities.slice(0)
+    }
   }
 
   isEmpty():boolean

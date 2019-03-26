@@ -124,7 +124,7 @@ export class DataModel
     return this.properties[key] as T || fallbackValue
   }
 
-  public getPropertyForFilter(key:string)
+  public getPropertyForFilter(key:string):any
   {
     switch (key)
     {
