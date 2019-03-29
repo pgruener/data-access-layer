@@ -23,7 +23,7 @@ export class DataModel
 
   constructor(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean)
   {
-    this.properties = properties
+    this.properties = this.mapDataIn(properties)
     this.dataProvider = dataProvider
     this.instanceNr = ++DataModel.INSTANCE_COUNTER
 
