@@ -1,6 +1,6 @@
 {
   "name": "@bitpuls/data-access-layer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "data-access-layer will help.",
   "main": "./lib/DataAccessLayer.tsx",
   "scripts": {
