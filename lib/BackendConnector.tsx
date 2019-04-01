@@ -1,4 +1,4 @@
-import Promise = require('Promise')
+import * as Promise from 'Promise'
 import { HttpMethod } from './HttpMethod';
 
 export interface BackendConnector

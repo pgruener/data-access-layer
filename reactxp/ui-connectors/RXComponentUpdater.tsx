@@ -1,7 +1,7 @@
 import RX = require('reactxp');
-import DataModel = require('../../DataModel');
-import DataComponentUpdater = require('../../DataComponentUpdater');
-import DataCollection = require('../../DataCollection');
+import { DataComponentUpdater } from '../../lib/DataComponentUpdater';
+import { DataCollection } from '../../lib/DataCollection';
+import { DataModel } from '../../lib/DataModel';
 
 class RXComponentUpdater extends DataComponentUpdater
 {
