@@ -23,6 +23,9 @@
   ],
   "author": "Royal Software GmbH",
   "license": "MIT License",
+  "dependencies": {
+    "promise": "^8.0.3"
+  },
   "bugs": {
     "url": "https://github.com/pgruener/data-access-layer/issues"
   },
