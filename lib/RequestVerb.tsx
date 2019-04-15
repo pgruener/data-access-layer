@@ -1,0 +1,1 @@
+export type RequestVerb = 'create'|'update'|'delete'
