@@ -45,7 +45,7 @@ export class QueueWorker
     }
 
 
-    this.backendConnector.doRequest(requestData).done((response) => {
+    this.backendConnector.doRequest(requestData).done((response:Object) => {
 
       requestData.setResponse(response)
 
