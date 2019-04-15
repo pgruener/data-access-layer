@@ -1,6 +1,6 @@
 import { DataProviderConfig } from "./DataProviderConfig";
-import { BackendConnector } from "./BackendConnector";
+import { QueueWorker } from "./QueueWorker";
 
 export interface DataProviderConfigConstructor {
-  new(dataProviderName:string, backendConnector:BackendConnector): DataProviderConfig
+  new(dataProviderName:string, queueWorker:QueueWorker): DataProviderConfig
 }

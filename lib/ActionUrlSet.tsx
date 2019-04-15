@@ -4,6 +4,8 @@ import { DataModel } from "./DataModel";
 import { HttpMethod } from "./HttpMethod";
 import { ObjectMap } from "./ObjectMap";
 
+const FALLBACK_HTTP_METHOD:HttpMethod = 'POST';
+
 export class ActionUrlSet
 {
   private actionUrls:{[s:string]:ActionUrl} = {}
@@ -38,7 +40,7 @@ export class ActionUrlSet
 
   private guessHttpMethod(key:string):HttpMethod
   {
-    return this.verbMethodMap[key] || 'GET'
+    return this.verbMethodMap[key] || FALLBACK_HTTP_METHOD
   }
 
   public getActionUrl = (action:string|HttpMethod, dataModel:DataModel, additionalVariables?:ObjectMap):ActionUrl => {

@@ -4,11 +4,15 @@ import { DataProvider } from './DataProvider';
 import { ObjectMap } from "./ObjectMap";
 
 import { CLIENT_ID_ATTRIBUTE } from './Constants';
+import { RequestData, ActionRequestData } from './RequestData';
+import { DataModelRequestMetaData } from './DataModelRequestMetaData';
+import { DataModelState } from './DataModelState';
 
 export class DataModel
 {
   private listeners:Array<DataModelListener> = new Array()
   private criticalListeners:Array<DataModelListener> = new Array()
+  private requestQueue:Array<DataModelRequestMetaData> = []
   
   protected dataProvider:DataProvider<DataModel>
   private properties:ObjectMap
@@ -19,6 +23,7 @@ export class DataModel
   private static INSTANCE_COUNTER = 0
   private changeIntervalId:number
   private conflictingModel:DataModel
+  private state:DataModelState
 
 
   constructor(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean)
@@ -31,6 +36,16 @@ export class DataModel
     {
       this.setProperty(CLIENT_ID_ATTRIBUTE, 'model_' + Date.now())
     }
+  }
+
+  get dataProviderConfig()
+  {
+    return this.dataProvider.config
+  }
+
+  informAboutRequest(requestData:RequestData<DataModel>)
+  {
+    this.requestQueue.push(new DataModelRequestMetaData(requestData))
   }
 
   private triggerChangeListeners()
@@ -210,6 +225,12 @@ export class DataModel
     }
   }
 
+  get originalProperties():ObjectMap
+  {
+    return this.properties
+  }
+
+
   get changedProperties():ObjectMap
   {
     return this.clientChangedProperties
@@ -293,10 +314,7 @@ export class DataModel
 
   public performAction = (action:string, actionVariables:ObjectMap, payload:ObjectMap) =>
   {
-    this.dataProvider.config.getActionUrlSet().getActionUrl(action, this, actionVariables)
-
-    // this.dataProviderConfig.getBackendConnector()
-    // TODO: Do perform code...
+    this.dataProvider.doRequest(new ActionRequestData(this.dataProvider, this, action, actionVariables, payload))
   }
 
   public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string

@@ -7,10 +7,11 @@ import { DataCollectionOptions } from './DataCollectionOptions'
 import { DataCollectionFactory } from './DataCollectionFactory';
 import { ObjectMap } from "./ObjectMap";
 import { DataProviderState } from './DataProviderState';
-import { ActionUrl } from './ActionUrl';
 import { DataModel } from './DataModel';
 import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
 import { FilterRule } from './filter/FilterRule';
+import { RequestData, DataModelRequestData, UrlRequestData } from './RequestData';
+import { RequestVerb } from './RequestVerb';
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {
   private _state:DataProviderState = 'not_inited'
@@ -91,23 +92,23 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
       if (this.shouldLoadData(url, collection))
       {
         this.requestCacheTimeouts[url] = Date.now() + this.config.getDataCacheLifetime().getMilliSeconds()
-
-        this.config.backendConnector.get<ObjectMap[]>(url).done((objectMaps:ObjectMap[]) => {
-    
-          if (objectMaps)
-          {
-            let entities = new Array()
-
-            objectMaps.forEach((objectMap) => {
-              entities.push(this.createDataModel(objectMap))
-            })
-
-            // FIXME: Instead mergeEntities
-            this.buildRootDataCollection(scopeName).mergeEntities(entities)
-          }
-        })
-  
+        this.config.queueWorker.doRequest(new UrlRequestData(this, url, scopeName))
       }
+    }
+  }
+
+  onLoadedData(scopeName:string, objectMaps:ObjectMap[])
+  {
+    
+    if (objectMaps)
+    {
+      let entities = new Array()
+
+      objectMaps.forEach((objectMap) => {
+        entities.push(this.createDataModel(objectMap))
+      })
+
+      this.buildRootDataCollection(scopeName).mergeEntities(entities)
     }
   }
 
@@ -128,25 +129,16 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     return Date.now() > timeout
   }
 
-  public delete(dataModel:DataModel)
+
+  private onBeforeDelete(dataModel:T)
   {
-    let identityHashCode = dataModel.computeIdentityHashCode()
-    this.deleteIntern(identityHashCode)
+    this.deleteIntern(dataModel.computeIdentityHashCode())
+  }
 
-    let destroyUrl:ActionUrl = this.config.getActionUrlSet().getActionUrl('destroy', dataModel)
 
-    if (destroyUrl)
-    {
-      this.doServerRequest(destroyUrl, {}, (objectMap:ObjectMap) => {
-        this.deleteIntern(identityHashCode)
-      })
-
-      // TODO: What to do, if deletion fails on server side?
-    }
-    else
-    {
-      throw new Error(`There is no destroy possible for ${this.config.dataProviderName}`)
-    }
+  public onAfterDelete(dataModel:T)
+  {
+    this.deleteIntern(dataModel.computeIdentityHashCode())
   }
 
   private deleteIntern(identityHashCode:string)
@@ -179,65 +171,35 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     return this.dataCollectionFactory.getExternalDataCollectionFactory().find(dataProviderName, searchMap)
   }
 
-  private writeInstanceToServer(dataModel:T)
-  {
-    let createUrl:ActionUrl = this.config.getActionUrlSet().getActionUrl('create', dataModel)
 
-    if (createUrl)
+  public onAfterNewInstance = (dataModel:T, objectMaps:ObjectMap) => {
+    dataModel.mergeChanges(objectMaps)
+
+    delete this._allEntities[CLIENT_ID_ATTRIBUTE]
+    dataModel.removeProperty(CLIENT_ID_ATTRIBUTE)
+
+    this._allEntities[dataModel.computeIdentityHashCode()] = dataModel
+  }
+
+  public onAfterUpdate = (objectMaps:ObjectMap|ObjectMap[]) => {
+
+    if (objectMaps.constructor == Array)
     {
-      let payload = this.config.prepareForServer(dataModel)
-
-      this.doServerRequest(createUrl, payload, (objectMaps:ObjectMap) => {
-        dataModel.mergeChanges(objectMaps)
-
-        delete this._allEntities[CLIENT_ID_ATTRIBUTE]
-        dataModel.removeProperty(CLIENT_ID_ATTRIBUTE)
-
-        this._allEntities[dataModel.computeIdentityHashCode()] = dataModel
+      (objectMaps as ObjectMap[]).forEach((objectMap:ObjectMap) => {
+        this.createDataModel(objectMap)
       })
     }
     else
     {
-      throw new Error(`There is no update possible for ${this.config.dataProviderName}`)
+      this.createDataModel(objectMaps as ObjectMap)
     }
   }
 
-  private tryWriteChangeToServer(dataModel:DataModel)
+  public doRequest(requestData:RequestData<T>)
   {
-    let updateUrl:ActionUrl = this.config.getActionUrlSet().getActionUrl('update', dataModel)
-
-    if (updateUrl)
-    {
-      let payload = this.config.prepareForServer(dataModel)
-  
-      this.doServerRequest(updateUrl, payload, (objectMaps:ObjectMap|ObjectMap[]) => {
-
-        if (objectMaps.constructor == Array)
-        {
-          (objectMaps as ObjectMap[]).forEach((objectMap:ObjectMap) => {
-            this.createDataModel(objectMap)
-          })
-        }
-        else
-        {
-          this.createDataModel(objectMaps as ObjectMap)
-        }
-      })
-    }
-    else
-    {
-      throw new Error(`There is no update possible for ${this.config.dataProviderName}`)
-    }
+    let queueName = this.config.getBackendConnectorQueueName()
+    this.config.queueWorker.doRequest(requestData, queueName)
   }
-
-  public doServerRequest(actionUrl:ActionUrl, payload:ObjectMap, callback:(object:Object) => void)
-  {
-    let backendConnector = this.config.backendConnector
-    let apiMethod = backendConnector.getConcreteRequestMethod(actionUrl.method)
-
-    apiMethod.apply(backendConnector, [actionUrl.url, payload]).done(callback)
-  }
-
 
   public createDataModel(objectMap:ObjectMap, isBuild?:boolean):T
   {
@@ -267,25 +229,39 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     return dataModel
   }
 
-  dataModelAsksForSave(dataModel:T)
+  private computeRequestVerb(dataModel:T):RequestVerb
   {
     if (dataModel.isMarkedForDeletion())
     {
-      this.delete(dataModel)
+      return 'delete'
     }
     else if (dataModel.hasProperty(CLIENT_ID_ATTRIBUTE))
     {
-      this.writeInstanceToServer(dataModel)
+      return 'create'
     }
     else
     {
-      this.tryWriteChangeToServer(dataModel)
+      return 'update'
     }
+  }
+
+  dataModelAsksForSave(dataModel:T)
+  {
+    let requestVerb:RequestVerb = this.computeRequestVerb(dataModel)
+
+    if (requestVerb == 'delete')
+    {
+      this.onBeforeDelete(dataModel)
+    }
+
+    this.doRequest(new DataModelRequestData(this, dataModel, requestVerb))
   }
 
 
   private buildRootDataCollection(scopeName:string)
   {
+    scopeName = scopeName || DEFAULT_SCOPE_NAME
+
     if (!this.hasRootDataCollection(scopeName))
     {
       this.rootDataCollectionsByScope[scopeName] = new RootDataCollection({ dataProvider: this, changeProvider: this, scope: scopeName, topCollection: null })

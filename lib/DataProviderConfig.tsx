@@ -1,4 +1,3 @@
-import { BackendConnector } from "./BackendConnector";
 import { ActionUrlSet } from './ActionUrlSet'
 import { DataModel } from './DataModel';
 import { ActionUrlConfig } from "./ActionUrlConfig";
@@ -8,7 +7,7 @@ import { Duration } from "./Duration";
 import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMoment";
 import { FilterCollection } from "./filter/FilterCollection";
 import { DataCollection } from "./DataCollection";
-import { DEFAULT_SCOPE_NAME } from './Constants';
+import { DEFAULT_SCOPE_NAME, DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from './Constants';
 import { DataProviderScope } from "./DataProviderScope";
 import { FilterMarking } from "./filter/FilterMarking";
 import { NotEnoughFiltersError } from "./filter/NotEnoughFiltersError";
@@ -16,17 +15,19 @@ import { TooManyFiltersError } from "./filter/TooManyFiltersError";
 import { FilterRuleIn } from "./filter/FilterRuleIn";
 import { FilterRule } from "./filter/FilterRule";
 import { FilterRuleMarker } from "./filter/FilterRuleMarker";
+import { QueueWorker } from "./QueueWorker";
+import { RequestData, DataModelRequestData } from './RequestData';
 
 export abstract class DataProviderConfig
 {
-  private _backendConnector:BackendConnector
+  private _queueWorker:QueueWorker
   private _dataProviderName:string
   protected searchPropertyWhitelist:String[] = undefined
 
-  constructor(dataProviderName:string, backendConnector:BackendConnector)
+  constructor(dataProviderName:string, queueWorker:QueueWorker)
   {
     this._dataProviderName = dataProviderName
-    this._backendConnector = backendConnector
+    this._queueWorker = queueWorker
   }
 
   public abstract getScopes:() => DataProviderScopeSet
@@ -219,8 +220,8 @@ export abstract class DataProviderConfig
     return this._dataProviderName;
   }
 
-  get backendConnector():BackendConnector {
-    return this._backendConnector;
+  get queueWorker():QueueWorker {
+    return this._queueWorker;
   }
 
   public getUpdatedAtFieldName = ():string =>
@@ -267,8 +268,8 @@ export abstract class DataProviderConfig
     return new ActionUrlSet(this.getActionUrlConfig())
   }
 
-  public prepareForServer = (dataModel:DataModel):ObjectMap => {
-    return dataModel.mapDataOut(dataModel.changedProperties)
+  public computePayloadForRequest = (requestData:DataModelRequestData):ObjectMap => {
+    return requestData.dataModel.mapDataOut(requestData.changedPropertiesSnapshot)
   }
 
   public extractFilterCollectionForSelection = (dataCollection:DataCollection<DataModel>):FilterCollection<DataModel> =>
@@ -384,6 +385,16 @@ export abstract class DataProviderConfig
   public getChangePropagateWaitDuration():Duration
   {
     return new Duration(100)
+  }
+
+  public getBackendConnectorQueueName():string
+  {
+    return DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME
+  }
+
+  public prepareForServer(dataModel:DataModel):ObjectMap
+  {
+    return dataModel.mapDataOut(dataModel.changedProperties)
   }
 
   //getLoadedTimeRanges|propertyName... evtl. in Wrapper?!

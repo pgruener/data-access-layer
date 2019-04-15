@@ -1,6 +1,5 @@
 import { DataProvider} from "./DataProvider";
 import { DataCollection } from './DataCollection'
-import { BackendConnector } from "./BackendConnector";
 import { DataCollectionOptions } from "./DataCollectionOptions";
 import { DataModel } from "./DataModel";
 import { ObjectMap } from "./ObjectMap";
@@ -8,10 +7,12 @@ import { ExternalDataCollectionFactory } from "./ExternalDataCollectionFactory";
 import { DataProviderConfigConstructor } from "./DataProviderConfigConstructor";
 import { DataModelConstructor } from "./DataModelConstructor";
 import { StringOperations } from './StringOperations'
+import { QueueWorker } from "./QueueWorker";
+import { BackendConnector } from "./BackendConnector";
 
 export class DataCollectionFactory
 {
-  protected backendConnector:BackendConnector
+  protected queueWorker:QueueWorker
   protected dataProviders:{[s:string]: DataProvider<DataModel>} = {}
   private externalDataCollectionFactory:ExternalDataCollectionFactory
 
@@ -26,7 +27,7 @@ export class DataCollectionFactory
 
     if (!dataProvider)
     {
-      this.dataProviders[dataProviderName] = new DataProvider(this, new dataProviderConfigClass(dataProviderName, this.backendConnector), dataModelClass)
+      this.dataProviders[dataProviderName] = new DataProvider(this, new dataProviderConfigClass(dataProviderName, this.queueWorker), dataModelClass)
       dataProvider = this.dataProviders[dataProviderName]
     }
 
@@ -72,6 +73,6 @@ export class DataCollectionFactory
   constructor(externalDataCollectionFactory:ExternalDataCollectionFactory, backendConnector:BackendConnector)
   {
     this.externalDataCollectionFactory = externalDataCollectionFactory
-    this.backendConnector = backendConnector
+    this.queueWorker = new QueueWorker(backendConnector)
   }
 }

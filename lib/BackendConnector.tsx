@@ -1,8 +1,7 @@
 import * as Promise from 'Promise'
-import { HttpMethod } from './HttpMethod';
+import { RequestData } from './RequestData';
 
 export interface BackendConnector
 {
-  getConcreteRequestMethod(method:HttpMethod):Function
-  get<T>(apiPath: string):Promise<T>
+  doRequest<T>(requestData:RequestData<T>, queueName?:string):Promise<T>
 }
