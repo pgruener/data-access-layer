@@ -21,6 +21,9 @@
     "web",
     "restful"
   ],
+  "dependencies": {
+    "promise": "^8.0.3"
+  },
   "author": "Royal Software GmbH",
   "license": "MIT License",
   "bugs": {
