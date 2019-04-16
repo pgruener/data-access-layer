@@ -397,5 +397,10 @@ export abstract class DataProviderConfig
     return dataModel.mapDataOut(dataModel.changedProperties)
   }
 
+  public unwrapFromServer(requestData:RequestData<DataModel>, objectMap:ObjectMap|ObjectMap[]):ObjectMap|ObjectMap[]
+  {
+    return objectMap
+  }
+
   //getLoadedTimeRanges|propertyName... evtl. in Wrapper?!
 }

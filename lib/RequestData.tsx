@@ -27,7 +27,7 @@ export abstract class RequestData<T>
     return this._payload
   }
 
-  setResponse(response:Object)
+  setResponse(response:ObjectMap|ObjectMap[])
   {
     if (this._response)
     {
@@ -35,7 +35,7 @@ export abstract class RequestData<T>
     }
     else
     {
-      this._response = response
+      this._response = this._dataProvider.config.unwrapFromServer(this, response)
     }
   }
 }
