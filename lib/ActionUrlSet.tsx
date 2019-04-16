@@ -15,7 +15,7 @@ export class ActionUrlSet
     show: 'GET',
     edit: 'GET',
     update: 'PATCH',
-    destroy: 'DELETE'
+    delete: 'DELETE'
   }
 
   constructor(config:ActionUrlConfig)

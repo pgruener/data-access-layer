@@ -7,7 +7,7 @@ export interface ActionUrlConfig
 	show?:string|ActionUrl
 	edit?:string|ActionUrl
 	update?:string|ActionUrl
-	destroy?:string|ActionUrl
+	delete?:string|ActionUrl
 	
 	[s:string]: string|ActionUrl
 }
