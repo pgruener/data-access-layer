@@ -278,14 +278,24 @@ export class DataModel
     }
   }
 
+  private shouldMerge = (objectMap:ObjectMap):boolean =>
+  {
+    let updatedAtFieldKey = this.dataProvider.config.getUpdatedAtFieldName()
+    if (!this.hasProperty(updatedAtFieldKey))
+    {
+      return true
+    }
+
+    return new Date(this.getProperty(updatedAtFieldKey)) < new Date(objectMap[updatedAtFieldKey].toString())
+  }
+
   mergeChanges(objectMap:ObjectMap)
   {
     objectMap = this.mapDataIn(objectMap)
 
     let anythingChanged = false
 
-    let updatedAtFieldKey = this.dataProvider.config.getUpdatedAtFieldName()
-    let shouldMerge = !this.hasProperty(updatedAtFieldKey) || new Date(this.getProperty(updatedAtFieldKey)) < new Date(objectMap[updatedAtFieldKey].toString())
+    let shouldMerge = this.shouldMerge(objectMap)
     
     if (shouldMerge)
     {
