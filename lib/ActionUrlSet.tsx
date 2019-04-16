@@ -54,7 +54,7 @@ export class ActionUrlSet
 
     let url = actionUrl.url
 
-    let variableFinder = /\$\{([a-z]*)\}/gm
+    let variableFinder = /\$\{([a-z\.\_]*)\}/gm
 
     let match
     while (match = variableFinder.exec(url))
