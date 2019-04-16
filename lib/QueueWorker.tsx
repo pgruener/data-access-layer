@@ -2,6 +2,7 @@ import { BackendConnector } from "./BackendConnector";
 import { DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from "./Constants";
 import { RequestData, DataModelRequestData } from "./RequestData";
 import { DataModel } from "./DataModel";
+import { ObjectMap } from "./ObjectMap";
 
 export class QueueWorker
 {
@@ -47,7 +48,14 @@ export class QueueWorker
 
     this.backendConnector.doRequest(requestData).done((response:Object) => {
 
-      requestData.setResponse(response)
+      if (response instanceof Array)
+      {
+        requestData.setResponse(response as ObjectMap[])
+      }
+      else
+      {
+        requestData.setResponse(response as ObjectMap)
+      }
 
       // Success | Error
 

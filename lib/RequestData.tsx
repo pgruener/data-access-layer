@@ -10,7 +10,7 @@ export abstract class RequestData<T>
   protected _actionUrl:ActionUrl
   protected _payload:ObjectMap
 
-  private _response:Object
+  protected _response:ObjectMap|ObjectMap[]
 
   constructor(dataProvider:DataProvider<DataModel>)
   {
@@ -54,7 +54,7 @@ export class UrlRequestData extends RequestData<Object>
   setResponse(response:ObjectMap[])
   {
     super.setResponse(response)
-    this._dataProvider.onLoadedData(this._scopeName, response)
+    this._dataProvider.onLoadedData(this._scopeName, this._response as ObjectMap[])
   }
 
 
@@ -89,11 +89,11 @@ export class DataModelRequestData extends RequestData<DataModel>
 
     if (this.action == 'create')
     {
-      this._dataProvider.onAfterNewInstance(this.dataModel, response)
+      this._dataProvider.onAfterNewInstance(this.dataModel, this._response as ObjectMap)
     }
     else
     {
-      this._dataProvider.onAfterUpdate(response)
+      this._dataProvider.onAfterUpdate(this._response)
     }
   }
 
