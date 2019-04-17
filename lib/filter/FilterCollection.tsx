@@ -84,7 +84,14 @@ export class FilterCollection<T extends DataModel>
       filteredEntities = filterRule.filter(filteredEntities) as T[]
     })
 
-    return filteredEntities.slice(0)
+    return this.removeEntitiesMarkedForDeletion(filteredEntities)
+  }
+
+  private removeEntitiesMarkedForDeletion(entities:T[]):T[]
+  {
+    return entities.filter((entity:T) => {
+      return !entity.isMarkedForDeletion()
+    })
   }
 
   get filterRules():FilterRule<Object>[]
