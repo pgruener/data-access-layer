@@ -163,7 +163,6 @@ export class DataModel
     return isPersisted
   }
 
-
   removeProperty(key:string)
   {
     delete this.clientChangedProperties[key]

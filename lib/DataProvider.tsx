@@ -223,6 +223,11 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
     else
     {
+      if (!this.config.shouldSurpressIdentityHashCodeWarning() && identityHashCode == this.dataModelClass.computeIdentityHashCode({}, this.config))
+      {
+        console.warn(`It seems like you forgot implement getIdentityRelevantAttributeNames correctly for ${this.config.dataProviderName}, but received ${dataModel} in your DataProviderConfig subclass.`)
+      }
+
       dataModel.mergeChanges(objectMap)
     }
 

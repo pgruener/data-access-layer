@@ -37,6 +37,11 @@ export abstract class DataProviderConfig
     return  /\$\{([a-z\.\_]*)\}/gm
   }
 
+  public shouldSurpressIdentityHashCodeWarning()
+  {
+    return false
+  }
+
   public extractVariableAndModifier(variableWithModifier:string):{variable: string, modifier: string}
   {
     let variableModifierSplitted = variableWithModifier.split('.')
