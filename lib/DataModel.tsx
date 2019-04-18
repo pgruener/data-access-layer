@@ -373,21 +373,4 @@ export class DataModel
 
     return identityHashCode
   }
-
-  public getFootprint():string
-  {
-    let footprint = ''
-
-    Object.keys(this.properties).sort().forEach((key, index:number) => {
-
-      if (index != 0)
-      {
-        footprint += '_'
-      }
-
-      footprint += key + this.properties[key]
-    })
-
-    return footprint
-  }
 }
