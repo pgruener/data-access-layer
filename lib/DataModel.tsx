@@ -280,13 +280,13 @@ export class DataModel
 
   private shouldMerge = (objectMap:ObjectMap):boolean =>
   {
-    let updatedAtFieldKey = this.dataProvider.config.getUpdatedAtAttributeName()
-    if (!this.hasProperty(updatedAtFieldKey))
+    let updatedAtAttributeName = this.dataProvider.config.getUpdatedAtAttributeName()
+    if (!this.hasProperty(updatedAtAttributeName))
     {
       return true
     }
 
-    return new Date(this.getProperty(updatedAtFieldKey)) < new Date(objectMap[updatedAtFieldKey].toString())
+    return new Date(this.getProperty(updatedAtAttributeName)) < new Date(objectMap[updatedAtAttributeName].toString())
   }
 
   mergeChanges(objectMap:ObjectMap)
