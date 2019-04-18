@@ -10,7 +10,9 @@ import { DataProviderState } from './DataProviderState';
 import { DataModel } from './DataModel';
 import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
 import { FilterRule } from './filter/FilterRule';
-import { RequestData, DataModelRequestData, UrlRequestData } from './RequestData';
+import { RequestData } from './RequestData';
+import { DataModelRequestData } from "./DataModelRequestData";
+import { UrlRequestData } from "./UrlRequestData";
 import { RequestVerb } from './RequestVerb';
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {

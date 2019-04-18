@@ -1,6 +1,7 @@
 import { BackendConnector } from "./BackendConnector";
 import { DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from "./Constants";
-import { RequestData, DataModelRequestData } from "./RequestData";
+import { RequestData } from "./RequestData";
+import { DataModelRequestData } from "./DataModelRequestData";
 import { DataModel } from "./DataModel";
 import { ObjectMap } from "./ObjectMap";
 

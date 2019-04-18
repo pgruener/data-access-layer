@@ -4,7 +4,8 @@ import { DataProvider } from './DataProvider';
 import { ObjectMap } from "./ObjectMap";
 
 import { CLIENT_ID_ATTRIBUTE } from './Constants';
-import { RequestData, ActionRequestData } from './RequestData';
+import { RequestData } from './RequestData';
+import { ActionRequestData } from "./ActionRequestData";
 import { DataModelRequestMetaData } from './DataModelRequestMetaData';
 import { DataModelState } from './DataModelState';
 

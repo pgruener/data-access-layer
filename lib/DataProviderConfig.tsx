@@ -16,7 +16,8 @@ import { FilterRuleIn } from "./filter/FilterRuleIn";
 import { FilterRule } from "./filter/FilterRule";
 import { FilterRuleMarker } from "./filter/FilterRuleMarker";
 import { QueueWorker } from "./QueueWorker";
-import { RequestData, DataModelRequestData } from './RequestData';
+import { RequestData } from './RequestData';
+import { DataModelRequestData } from "./DataModelRequestData";
 
 export abstract class DataProviderConfig
 {
