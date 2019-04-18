@@ -9,7 +9,6 @@ import { ObjectMap } from "./ObjectMap";
 import { DataProviderState } from './DataProviderState';
 import { DataModel } from './DataModel';
 import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
-import { FilterRule } from './filter/FilterRule';
 import { RequestData } from './RequestData';
 import { DataModelRequestData } from "./DataModelRequestData";
 import { UrlRequestData } from "./UrlRequestData";
@@ -97,7 +96,6 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
   onLoadedData(scopeName:string, objectMaps:ObjectMap[])
   {
-    
     if (objectMaps)
     {
       let entities = new Array()
