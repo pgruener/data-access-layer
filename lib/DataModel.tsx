@@ -3,7 +3,7 @@ import { DataProviderConfig } from './DataProviderConfig';
 import { DataProvider } from './DataProvider';
 import { ObjectMap } from "./ObjectMap";
 
-import { CLIENT_ID_ATTRIBUTE } from './Constants';
+import { CLIENT_ID_ATTRIBUTE, IDENTITY_HASH_CODE_PROPERTY_NAME } from './Constants';
 import { RequestData } from './RequestData';
 import { ActionRequestData } from "./ActionRequestData";
 import { DataModelRequestMetaData } from './DataModelRequestMetaData';
@@ -144,7 +144,7 @@ export class DataModel
   {
     switch (key)
     {
-      case 'identityHashCode':
+      case IDENTITY_HASH_CODE_PROPERTY_NAME:
         return this.computeIdentityHashCode()
 
       default:
