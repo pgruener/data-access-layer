@@ -190,6 +190,11 @@ export class DataModel
 
   public setProperty(key:string, value:Object, skipTriggerListeners?:boolean):boolean
   {
+    if (this.isMarkedForDeletion())
+    {
+      throw new Error(`You tried to set a property '${key}' of a datModel ${this} which is already marked for deletion. This is inappropriate.`)
+    }
+
     let changed = this.properties[key] !== value || this.clientChangedProperties[key] !== value
 
     if (changed)
