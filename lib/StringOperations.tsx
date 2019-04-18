@@ -9,6 +9,8 @@ export class StringOperations
    * @method removeNonAlphaNumericChars
    * @param {string} str 
    * @return {string}
+   * @example
+   *   StringOperations.removeNonAlphaNumericChars('#Foo!') // Foo
    */
   public static removeNonAlphaNumericChars(str:string):string
   {
@@ -21,6 +23,8 @@ export class StringOperations
    * @method capitalize
    * @param {string} str
    * @return {string} 
+   * @example
+   *   StringOperations.capitalize('hey') // Hey
    */
   public static capitalize(str:string):string
   {
