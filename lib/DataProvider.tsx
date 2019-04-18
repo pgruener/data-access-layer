@@ -43,12 +43,6 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     return this._config
   }
 
-  public hasData<T>(filterRule:FilterRule<T>):boolean
-  {
-    // TODO: Implement correctly
-    return false
-  }
-
   dataCollectionChanged(dataCollection:DataCollection<T>)
   {
     this.changeListeners.forEach((listener) => {
