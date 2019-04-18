@@ -35,7 +35,9 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     this.dataModelClass = dataModelClass
   }
 
-
+  /**
+   * Attribute accessor to retreive {@link DataProviderConfig}
+   */
   get config():DataProviderConfig
   {
     return this._config
