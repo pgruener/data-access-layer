@@ -217,15 +217,31 @@ export abstract class DataProviderConfig
     return null
   }
 
+  /**
+   * Attribute accessor to get the data providers name
+   */
   get dataProviderName():string {
     return this._dataProviderName;
   }
 
+  /**
+   * Attribute accessor to get the queueWorker used for this DataProvider
+   */
   get queueWorker():QueueWorker {
     return this._queueWorker;
   }
 
-  public getUpdatedAtFieldName = ():string =>
+  /**
+   * Returns the name of the attribute, that should be used, to decide,
+   * if data coming from the backend are newer than the local copy.
+   * 
+   * The default implemantion returns 'updated_at', which is the common
+   * handling in Ruby on Rails.
+   * 
+   * @method getUpdatedAtAttributeName
+   * @return {string} attributeName
+   */
+  public getUpdatedAtAttributeName = ():string =>
   {
     return 'updated_at'
   }
