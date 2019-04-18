@@ -317,6 +317,12 @@ export class DataModel
     }
   }
 
+  /**
+   * Returns this models identityHashCode
+   * @method computeIdentityHashCode
+   * @return {string} identityHashCode
+   * @see {DataModel.computeIdentityHashCode}
+   */
   computeIdentityHashCode():string
   {
     return DataModel.computeIdentityHashCode(this, this.dataProvider.config)
@@ -327,6 +333,20 @@ export class DataModel
     this.dataProvider.doRequest(new ActionRequestData(this.dataProvider, this, action, actionVariables, payload))
   }
 
+  /**
+   * Computes the identityHashCode for the given dataModel or object.
+   * The identiyHashCode identifies one DataModel bijectivly.
+   * 
+   * An identiy hash code is prefixed by its model name and its contains its
+   * identity relevant attributes seperated by underscore. (i.e.: milestone_5)
+   * 
+   * @method computeIdentityHashCode
+   * @static
+   * @param {DataModel} dataModel 
+   * @param {DataProviderConfig} dataProviderConfig 
+   * @return {string} identityHashCode
+   * @see {DataProviderConfig.getIdentityRelevantAttributeNames}
+   */
   public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string
   {
     let identityHashCode = dataProviderConfig.dataProviderName + '_'

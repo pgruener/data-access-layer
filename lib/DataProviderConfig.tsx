@@ -38,11 +38,6 @@ export abstract class DataProviderConfig
     return  /\$\{([a-z\.\_]*)\}/gm
   }
 
-  public shouldSurpressIdentityHashCodeWarning()
-  {
-    return false
-  }
-
   public extractVariableAndModifier(variableWithModifier:string):{variable: string, modifier: string}
   {
     let variableModifierSplitted = variableWithModifier.split('.')
@@ -235,9 +230,32 @@ export abstract class DataProviderConfig
     return 'updated_at'
   }
 
+  /**
+   * List of attributes that are relevant to determine the identity of ONE DataModel instance.
+   * In the most cases the default implementation returning just id is perfect and does not need
+   * any adjustment.
+   * 
+   * @method getIdentityRelevantAttributeNames
+   * @return {string[]}
+   */
+
   public getIdentityRelevantAttributeNames = ():string[] =>
   {
     return [ 'id' ]
+  }
+
+  /**
+   * Surpresses the identity hash code warning, if set to true in a subclass.
+   * 
+   * Please be really sure, what you do, when overriding this. In most cases,
+   * you did not correctly configured the getIdentityRelevantAttributeNames.
+   * 
+   * @method shouldSurpressIdentityHashCodeWarning
+   * @return {boolean}
+   */
+  public shouldSurpressIdentityHashCodeWarning()
+  {
+    return false
   }
 
   public getNewInstanceDataModelScopeNames = ():string[] =>
