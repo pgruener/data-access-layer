@@ -295,7 +295,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
       dataProvider: this,
       changeProvider: rootDataCollection,
       scope: options.scope,
-      initialEntities: rootDataCollection.getFilteredDataModels(),
+      initialEntities: rootDataCollection.getEntities(),
       changeListener: options.dataCollectionChangeListener,
       topCollection: null
     })

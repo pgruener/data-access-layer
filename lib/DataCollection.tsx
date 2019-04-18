@@ -8,12 +8,21 @@ import { DataModel } from './DataModel';
 import { ApplyFilterMode } from './ApplyFilterMode';
 import { FilterCollectionChangeListener } from './filter/FilterCollectionChangeListener';
 
+/**
+ * @class DataCollection
+ * A DataCollection holds and manages a collection of DataModel instances.
+ */
 export class DataCollection<T extends DataModel> implements DataCollectionChangeListener<T>, DataCollectionChangeProvider<T>, FilterCollectionChangeListener 
 {
   private static INSTANCE_COUNTER = 0
 
+  // All entities retreived from the parent collection or data provider
   protected allEntities:T[] = new Array()
+
+  // Remaining entities, after applying filters
   protected filteredEntities:T[] = new Array()
+
+  // Collection that holds all filters that are applied to this DataCollection
   private _filters:FilterCollection<T>
   
   private changeProvider:DataCollectionChangeProvider<T>
@@ -23,13 +32,14 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
 
   private changeListeners:Array<DataCollectionChangeListener<T>> = new Array()
 
-  private instanceNr:number
+  // Only used to help debugging (i.e.: if (this.instanceNr == 10) { debugger } ) 
+  private _instanceNr:number
 
   private _sorting:string|{(t1:T, t2:T) : number}
 
   constructor(config:DataCollectionConfig<T>)
   {
-    this.instanceNr = ++DataCollection.INSTANCE_COUNTER
+    this._instanceNr = ++DataCollection.INSTANCE_COUNTER
 
     this.scopeName = config.scope
     this.dataProvider = config.dataProvider
@@ -88,24 +98,32 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     }
   }
 
+  /**
+   * Attribute accessor for the collections topCollection
+   */
   get topCollection():DataCollection<T>
   {
     return this._topCollection
   }
 
+  /**
+   * Attribute accessor for the collections filterCollection
+   */
   get filterCollection():FilterCollection<T>
   {
     return this._filters
   }
 
-  private storeEntities(entities:DataModel[])
-  {
-    this.allEntities = entities || new Array()
-  }
-
+  /**
+   * Stores the entities retreived and applies filters to it.
+   * 
+   * @method storeEntitiesAndApplyFilters
+   * @param {DataModel[]} entities collection retreived from data provider
+   * @param {boolean} [forceTriggerChildren] 
+   */
   protected storeEntitiesAndApplyFilters(entities:DataModel[], forceTriggerChildren?:boolean)
   {
-    this.storeEntities(entities)
+    this.allEntities = entities || new Array()
 
     this.applyFilters(forceTriggerChildren ? 'force' : 'normal')
   }
@@ -149,11 +167,6 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     })
 
     return entity
-  }
-
-  get filters()
-  {
-    return this._filters
   }
 
   protected applyFilters(applyFilterMode:ApplyFilterMode):boolean
@@ -206,11 +219,19 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return entitiesChanged
   }
 
-  public getInstanceNr()
+  /**
+   * Attribute accessor for instanceNr
+   */
+  get instanceNr()
   {
-    return this.instanceNr
+    return this._instanceNr
   }
 
+  /**
+   * Retreives entities - sorted, if desired
+   * @param {string|{ (t1:T, t2:T):number}} [sorting] property to sort or sorting method
+   * @return {T[]} entities
+   */
   public getEntities(sorting?:string|{ (t1:T, t2:T):number }):T[]
   {
     if (sorting != undefined)
@@ -223,11 +244,21 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     }
   }
 
+  /**
+   * Informs, if the collection is empty.
+   * @method isEmpty
+   * @return {boolean} <code>true</code> if no entity available, <code>false</code> otherwise.
+   */
   isEmpty():boolean
   {
     return this.filteredEntities.length === 0
   }
 
+  /**
+   * Returns the first entity in the collection
+   * @method getFirstEntity
+   * @return {T} entity or null
+   */
   getFirstEntity():T
   {
     if (this.isEmpty())
@@ -238,6 +269,11 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
     return this.filteredEntities[0]
   }
 
+  /**
+   * Returns the last entity in the collection
+   * @method getLastEntity
+   * @return {T} entity or null
+   */
   getLastEntity():T
   {
     if (this.isEmpty())
@@ -256,20 +292,25 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
   }
 
 
-
+  /**
+   * Creates an exact same copy to this DataCollection
+   * @method createCopy
+   * @return {DataCollection<T>}
+   */
   public createCopy():DataCollection<T>
   {
-    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this.changeProvider, initialEntities: this.allEntities, filter: this.filters.filterRules, scope: this.scopeName, topCollection: this.topCollection})
+    return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this.changeProvider, initialEntities: this.allEntities, filter: this.filterCollection.filterRules, scope: this.scopeName, topCollection: this.topCollection})
   }
 
+  /**
+   * Creates a sub collection with filters given
+   * @method createSubCollection
+   * @param {FilterRule<Object>|FilterRule<Object>[]} filter
+   * @return {DataCollection<T>}
+   */
   public createSubCollection(filter:FilterRule<Object>|FilterRule<Object>[]):DataCollection<T>
   {
     return new DataCollection({ dataProvider: this.dataProvider, changeProvider: this, initialEntities: this.filteredEntities, filter: filter, scope: this.scopeName, topCollection: this.topCollection})
-  }
-
-  public getFilteredDataModels()
-  {
-    return this.filteredEntities
   }
 
   protected triggerListeners(forceTriggerChildren?:boolean)

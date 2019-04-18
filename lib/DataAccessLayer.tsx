@@ -1,3 +1,6 @@
+/**
+ * This file exports all files, which should be accessible be the world outside of the framework.
+ */
 export { ActionUrlConfig } from './ActionUrlConfig'
 export { BackendConnector } from './BackendConnector'
 export { DataModel } from './DataModel'
