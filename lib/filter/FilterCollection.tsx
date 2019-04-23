@@ -1,7 +1,14 @@
 import { FilterRule } from "./FilterRule";
 import { DataModel } from '../DataModel';
 import { DataCollection } from "../DataCollection";
-
+/**
+ * A FilterCollection is connected to an instance of a {@link DataCollection}. It holds all {@link FilterRule|FilterRules}
+ * instances, that are used to filter the DataCollection.
+ * 
+ * By default it just removes objects from the DataCollection, that are marked for deletion.
+ * 
+ * @class FilterCollection
+ */
 export class FilterCollection<T extends DataModel>
 {
   private _filterRules:FilterRule<Object>[] = new Array()
@@ -23,6 +30,15 @@ export class FilterCollection<T extends DataModel>
     return false
   }
 
+  /**
+   * Adds a {@link FilterRule} or an array of FilterRule to the {@link FilterCollection}. 
+   * This automatically triggers the {@link DataCollection|DataCollections} recalculation of
+   * elements, if shouldSkipChangeListener is false (default behavior)
+   * 
+   * @method add
+   * @param {FilterRule<T>|FilterRule<T>[]} filter to be added
+   * @param {boolean} [shouldSkipChangeListener] 
+   */
   public add<T>(filter:FilterRule<T>|FilterRule<T>[], shouldSkipChangeListener?:boolean):boolean
   {
     if (filter === undefined)

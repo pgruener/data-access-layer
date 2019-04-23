@@ -10,11 +10,19 @@ import { StringOperations } from './StringOperations'
 import { QueueWorker } from "./QueueWorker";
 import { BackendConnector } from "./BackendConnector";
 
+/**
+ * An instance of DataCollectionFactory is used to operate with the core concepts of the data access layer.
+ * It provides access to {@link DataCollection|DataCollections} and {@link DataModel|DataModels}
+ * 
+ * @class DataCollectionFactory
+ * @see DataCollection
+ * @see DataModel
+ */
 export class DataCollectionFactory
 {
   protected queueWorker:QueueWorker
   protected dataProviders:{[s:string]: DataProvider<DataModel>} = {}
-  private externalDataCollectionFactory:ExternalDataCollectionFactory
+  private _externalDataCollectionFactory:ExternalDataCollectionFactory
 
   private buildDataProvider<T extends DataModel>(
     dataProviderName:string,
@@ -59,9 +67,12 @@ export class DataCollectionFactory
     return dataProvider.createDataModel(map || {}, true) as T
   }
 
-  public getExternalDataCollectionFactory()
+  /**
+   * Attribute accessor for externalDataCollectionFactory
+   */
+  get externalDataCollectionFactory()
   {
-    return this.externalDataCollectionFactory
+    return this._externalDataCollectionFactory
   }
 
   public static normalizeName(str:string):string
@@ -72,7 +83,7 @@ export class DataCollectionFactory
 
   constructor(externalDataCollectionFactory:ExternalDataCollectionFactory, backendConnector:BackendConnector)
   {
-    this.externalDataCollectionFactory = externalDataCollectionFactory
+    this._externalDataCollectionFactory = externalDataCollectionFactory
     this.queueWorker = new QueueWorker(backendConnector)
   }
 }

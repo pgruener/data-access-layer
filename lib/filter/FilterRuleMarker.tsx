@@ -1,5 +1,10 @@
 import { FilterRule } from "./FilterRule";
 
+/**
+ * 
+ * @class FilterRuleMarker
+ * @see FilterMarking
+ */
 export class FilterRuleMarker<T extends FilterRule<Object>>
 {
   private _filterRule:T
@@ -22,6 +27,11 @@ export class FilterRuleMarker<T extends FilterRule<Object>>
 
   public use():T
   {
+    if (this._used)
+    {
+      throw new Error('FilterRuleMarker is already used and cannot be used twice.')
+    }
+
     this._used = true
     return this.filterRule
   }

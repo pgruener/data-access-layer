@@ -14,7 +14,7 @@ export class DataModelRequestData extends RequestData<DataModel> {
     this._propertiesSnapshot = dataModel.originalProperties; // TODO: Save Copy
     this._changedPropertiesSnapshot = dataModel.dataProviderConfig.prepareForServer(dataModel); // TODO: return Copy AND Just do this with newly changed properties...
     this.action = action;
-    this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().getActionUrl(this.action, this._dataModel);
+    this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel);
     this._payload = this._dataModel.dataProviderConfig.computePayloadForRequest(this);
   }
   setResponse(response: ObjectMap) {

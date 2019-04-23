@@ -111,18 +111,18 @@ export abstract class DataProviderConfig
 
     let markingFinder = this.markingFinderByModifier(variableModifierSplitted.modifier)
 
-    let filterMarker = filterMarking.filterMarkersForField(variableModifierSplitted.variable, markingFinder)
+    let filterMarker = filterMarking.filterMarkersForProperty(variableModifierSplitted.variable, markingFinder)
 
     switch (filterMarker.length)
     {
       case 0:
-        throw new NotEnoughFiltersError(`There must be a FilterRule supporting modifier '${variableModifierSplitted.modifier}' for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
+        throw new NotEnoughFiltersError(`There must be a FilterRule supporting modifier '${variableModifierSplitted.modifier}' for the property '${variableModifierSplitted.variable}' in the DataCollection.`)
 
       case 1:
         return this.getValueByWithModifier(filterMarker[0], variableModifierSplitted.modifier)
 
       default:
-        throw new TooManyFiltersError(`There must be exactly one FilterRule supporting modifier '${variableModifierSplitted.modifier}' for the field '${variableModifierSplitted.variable}' in the DataCollection.`)
+        throw new TooManyFiltersError(`There must be exactly one FilterRule supporting modifier '${variableModifierSplitted.modifier}' for the property '${variableModifierSplitted.variable}' in the DataCollection.`)
     }
   }
 
@@ -343,7 +343,7 @@ export abstract class DataProviderConfig
     let isSearchParamContentPresent = false
     filterMarking.getUnusedFilters().forEach((filterRule) => {
 
-      if (!this.shouldSkipSearchProperty(filterRule.fieldName))
+      if (!this.shouldSkipSearchProperty(filterRule.propertyName))
       {
         if (isSearchParamContentPresent)
         {

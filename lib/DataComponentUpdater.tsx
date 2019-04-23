@@ -3,7 +3,16 @@ import { DataModelListener } from "./DataModelListener";
 import { DataCollectionChangeListener } from "./DataCollectionChangeListener";
 import { DataModel } from "./DataModel";
 
-export class DataComponentUpdater implements DataModelListener, DataCollectionChangeListener<DataModel>
+/**
+ * DataComponentUpdater registers as listener for models and collections added.
+ * It also handles deregistration by easily call destroy-method.
+ * 
+ * The change handling must be implemented in concrete subclasses, as in our provided RXComponentUpdater.
+ * 
+ * @abstract
+ * @class DataComponentUpdater
+ */
+export abstract class DataComponentUpdater implements DataModelListener, DataCollectionChangeListener<DataModel>
 {
   protected collections:DataCollection<DataModel>[] = []
   protected dataModels:DataModel[] = []
@@ -51,11 +60,6 @@ export class DataComponentUpdater implements DataModelListener, DataCollectionCh
     this.dataModels.slice(0, 0)
   }
 
-  dataModelChanged(dataModel:DataModel)
-  {
-  }
-
-  dataCollectionChanged(dataCollection:DataCollection<DataModel>, forceTriggerChildren?:boolean)
-  {
-  }
+  abstract dataModelChanged(dataModel:DataModel):void
+  abstract dataCollectionChanged(dataCollection:DataCollection<DataModel>, forceTriggerChildren?:boolean):void
 }

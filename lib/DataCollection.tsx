@@ -6,13 +6,12 @@ import { FilterCollection } from './filter/FilterCollection';
 import { DataProvider } from './DataProvider';
 import { DataModel } from './DataModel';
 import { ApplyFilterMode } from './ApplyFilterMode';
-import { FilterCollectionChangeListener } from './filter/FilterCollectionChangeListener';
 
 /**
  * @class DataCollection
  * A DataCollection holds and manages a collection of DataModel instances.
  */
-export class DataCollection<T extends DataModel> implements DataCollectionChangeListener<T>, DataCollectionChangeProvider<T>, FilterCollectionChangeListener 
+export class DataCollection<T extends DataModel> implements DataCollectionChangeListener<T>, DataCollectionChangeProvider<T> 
 {
   private static INSTANCE_COUNTER = 0
 

@@ -64,7 +64,7 @@ export class DataModel
       this.listeners.forEach((listener) => {
         listener.dataModelChanged(this)
       })
-    }, this.dataProvider.config.getChangePropagateWaitDuration().getMilliSeconds())
+    }, this.dataProvider.config.getChangePropagateWaitDuration().milliSeconds)
 
   }
 

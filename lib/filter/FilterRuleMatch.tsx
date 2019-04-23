@@ -4,13 +4,13 @@ const MATCHER_FUNCTION = (value1:String, value2:string) => { return value2.toStr
 
 export class FilterRuleMatch extends FilterRule<String>
 {
-  constructor(fieldName:string, pattern:string)
+  constructor(propertyName:string, pattern:string)
   {
-    super(fieldName, MATCHER_FUNCTION, pattern)
+    super(propertyName, MATCHER_FUNCTION, pattern)
   }
 
   asUrlString()
   {
-    return encodeURIComponent(`match(${this.fieldName}, ${this.value})`)
+    return encodeURIComponent(`match(${this.propertyName}, ${this.value})`)
   }
 }

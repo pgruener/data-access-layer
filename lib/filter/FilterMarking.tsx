@@ -5,6 +5,13 @@ import { FilterRuleIn } from "./FilterRuleIn";
 import { FilterRuleMarker } from "./FilterRuleMarker";
 import { DataCollection } from "../DataCollection";
 
+/**
+ * FilterMarkings are used to detect, which relevant properties are already used in the url or payload as data,
+ * so all other filters *may* be appended to the url.
+ * 
+ * @class FilterMarking
+ * @see DataProviderConfig
+ */
 export class FilterMarking<T extends DataModel>
 {
   private filterRuleMarkers:FilterRuleMarker<FilterRule<Object>>[] = []
@@ -21,11 +28,11 @@ export class FilterMarking<T extends DataModel>
     }
   }
 
-  public filterMarkersForField(fieldName:string, filterCallback?:(filterRule:FilterRule<Object>) => boolean):FilterRuleMarker<FilterRule<Object>>[]
+  public filterMarkersForProperty(propertyName:string, filterCallback?:(filterRule:FilterRule<Object>) => boolean):FilterRuleMarker<FilterRule<Object>>[]
   {
     return this.filterRuleMarkers.filter((filterRuleMarker) => {
 
-      if (filterRuleMarker.filterRule.fieldName != fieldName)
+      if (filterRuleMarker.filterRule.propertyName != propertyName)
       {
         return false
       }
@@ -35,12 +42,18 @@ export class FilterMarking<T extends DataModel>
   }
 
 
-  public findInFilter(fieldName:string):FilterRuleMarker<FilterRuleIn<Object>>[]
+  public findInFilter(propertyName:string):FilterRuleMarker<FilterRuleIn<Object>>[]
   {
-    return this.filterMarkersForField(fieldName, this.inFilter) as FilterRuleMarker<FilterRuleIn<Object>>[]
+    return this.filterMarkersForProperty(propertyName, this.isFilterRuleIn) as FilterRuleMarker<FilterRuleIn<Object>>[]
   }
 
-  private inFilter(filterRule:FilterRule<Object>):boolean
+  /**
+   * Detects, if given FilterRule is instance of FilterRuleIn
+   * 
+   * @method isFilterRuleIn
+   * @param {FilterRule} filterRule 
+   */
+  private isFilterRuleIn(filterRule:FilterRule<Object>):boolean
   {
     return filterRule instanceof FilterRuleIn
   }

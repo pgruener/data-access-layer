@@ -5,6 +5,9 @@ import { DataCollectionChangeListener } from './DataCollectionChangeListener';
 import { DataModel } from './DataModel';
 import { DataCollection } from './DataCollection';
 
+/**
+ * @interface DataCollectionConfig
+ */
 export interface DataCollectionConfig<T extends DataModel>
 {
   dataProvider:DataProvider<T>

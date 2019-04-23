@@ -7,6 +7,7 @@ import { RequestData } from './RequestData';
  * 
  * The BackendConnector is responsible to retreive the desired data from the backend.
  * It receives an instance of {@link RequestData} to compute, what kind of request is needed.
+ * @interface BackendConnector
  */
 export interface BackendConnector
 {

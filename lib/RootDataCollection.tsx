@@ -2,6 +2,13 @@ import { DataCollection } from './DataCollection'
 import { DataModel } from './DataModel';
 import { DataModelListener } from "./DataModelListener";
 
+/**
+ * The RootDataCollection holds all known data for one specific {@link DataModel|DataModel type}.
+ * It manages adding, deleting and merging DataModels.
+ * 
+ * @class RootDataCollection
+ * @extends DataCollection
+ */
 export class RootDataCollection<T extends DataModel> extends DataCollection<T> implements DataModelListener
 {
   public addDataModel(dataModel:T)

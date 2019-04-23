@@ -4,7 +4,7 @@
 export class StringOperations
 {
   /**
-   * Return a copy of the string without alphanumeric characters.
+   * Returns a copy of the string without alphanumeric characters.
    * 
    * @method removeNonAlphaNumericChars
    * @param {string} str 
@@ -18,7 +18,7 @@ export class StringOperations
   }
 
   /**
-   * Return a copy of the string with capitalized first character.
+   * Returns a copy of the string with capitalized first character.
    * 
    * @method capitalize
    * @param {string} str

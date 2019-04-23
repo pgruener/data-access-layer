@@ -6,10 +6,17 @@ import { ObjectMap } from "./ObjectMap";
 
 const FALLBACK_HTTP_METHOD:HttpMethod = 'POST';
 
+/**
+ * An ActionUrlSet is created using an {@link ActionUrlConfig}.
+ * It maps a url to a http verb, if no verb is given in the ActionUrlConfig.
+ * 
+ * @class ActionUrlSet
+ * @see ActionUrlConfig
+ */
 export class ActionUrlSet
 {
   private actionUrls:{[s:string]:ActionUrl} = {}
-  private verbMethodMap:{[s:string]:HttpMethod} = {
+  private static verbMethodMap:{[s:string]:HttpMethod} = {
     create: 'POST',
     new: 'GET',
     show: 'GET',
@@ -22,28 +29,45 @@ export class ActionUrlSet
   {
     if (config != null)
     {
-      Object.keys(config).forEach((key) => {
+      Object.keys(config).forEach((actionName) => {
 
-        let currentElement = config[key]
+        let currentElement = config[actionName]
   
         if (typeof currentElement == 'string')
         {
-          this.actionUrls[key] = { url: currentElement, method: this.guessHttpMethod(key) }
+          this.actionUrls[actionName] = { url: currentElement, method: ActionUrlSet.guessHttpMethod(actionName) }
         }
         else
         {
-          this.actionUrls[key] = currentElement as ActionUrl
+          this.actionUrls[actionName] = currentElement as ActionUrl
         }
       })
     }
   }
 
-  private guessHttpMethod(key:string):HttpMethod
+  /**
+   * Guesses the http method based on the actions name. Falls back to 'POST'.
+   * 
+   * @method guessHttpMethod
+   * @param {string} actionName 
+   */
+  private static guessHttpMethod(actionName:string):HttpMethod
   {
-    return this.verbMethodMap[key] || FALLBACK_HTTP_METHOD
+    return ActionUrlSet.verbMethodMap[actionName] || FALLBACK_HTTP_METHOD
   }
 
-  public getActionUrl = (action:string|HttpMethod, dataModel:DataModel, additionalVariables?:ObjectMap):ActionUrl => {
+  /**
+   * Computes the {@link ActionUrl} for a specific action and DataModel.
+   * Replaces all variables in the url with variables from the DataModel.
+   * Falls back to variables from optional additionalVariables param.
+   * 
+   * @method computeActionUrl
+   * @param {string} action
+   * @param {DataModel} dataModel
+   * @param {ObjectMap} [additionalVariables]
+   * @return {ActionUrl}
+   */
+  public computeActionUrl = (action:string, dataModel:DataModel, additionalVariables?:ObjectMap):ActionUrl => {
 
     let actionUrl = this.actionUrls[action]
 
@@ -52,9 +76,8 @@ export class ActionUrlSet
       throw new Error(`actionUrl for action ${action} not defined.`)
     }
 
-    let url = actionUrl.url
-
     let variableFinder = /\$\{([a-z\.\_]*)\}/gm
+    let url = actionUrl.url
 
     let match
     while (match = variableFinder.exec(url))

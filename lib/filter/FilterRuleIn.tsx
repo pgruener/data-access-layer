@@ -2,12 +2,22 @@ import { DataModel } from '../DataModel';
 import { FilterRule } from './FilterRule';
 import { ValueRange } from '../ValueRange';
 
+/**
+ * FilterRuleIn is a subclass of {@link FilterRule}. It allows to filter a property with a {@link ValueRange}.
+ * Using FilterRuleIn is favored over combining two FilterRules with > and < filter for the same property,
+ * because FilterRuleIn's properties can be used in action urls.
+ * 
+ * @class FilterRuleIn
+ * @see FilterRule
+ * @example
+ *   new FilterRuleIn('amount', '<', { startValue: 10, endValue: 20 })
+ */
 export class FilterRuleIn<T> extends FilterRule<T>
 {
   private _valueRange:ValueRange<T>
-  constructor(fieldName:string, valueRange:ValueRange<T>)
+  constructor(propertyName:string, valueRange:ValueRange<T>)
   {
-    super(fieldName, null, null)
+    super(propertyName, null, null)
 
     if (valueRange.startValue > valueRange.endValue)
     {
@@ -17,6 +27,9 @@ export class FilterRuleIn<T> extends FilterRule<T>
     this._valueRange = valueRange
   }
 
+  /**
+   * Attribute accessor for valueRange
+   */
   get valueRange()
   {
     return this._valueRange
@@ -26,7 +39,7 @@ export class FilterRuleIn<T> extends FilterRule<T>
   {
     return dataModels.filter((dataModel) => {
 
-      let property = dataModel.getPropertyForFilter(this.fieldName)
+      let property = dataModel.getPropertyForFilter(this.propertyName)
 
       return property >= this._valueRange.startValue && property <= this._valueRange.endValue
     })
@@ -34,6 +47,6 @@ export class FilterRuleIn<T> extends FilterRule<T>
 
   asUrlString()
   {
-    return encodeURIComponent(`in(${this._fieldName}, ${this._valueRange.startValue}, ${this._valueRange.endValue})`)
+    return encodeURIComponent(`in(${this._propertyName}, ${this._valueRange.startValue}, ${this._valueRange.endValue})`)
   }
 }

@@ -1,11 +1,13 @@
-export class NotEnoughFiltersError// extends Error
+/**
+ * An instance of NotEnoughFiltersError is created and thrown, if a {@link DataProviderConfig} tries to compute
+ * an url, but not all neccessary information could be derived through filters.
+ * 
+ * @class NotEnoughFiltersError
+ * @see DataProviderConfig
+ */
+export class NotEnoughFiltersError
 {
   private error:Error
-
-  // get rawError()
-  // {
-  //   return this.error
-  // }
 
   constructor(errorMessage:string)
   {

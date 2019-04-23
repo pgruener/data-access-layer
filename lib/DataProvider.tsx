@@ -88,7 +88,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
       if (this.shouldLoadData(url, collection))
       {
-        this.requestCacheTimeouts[url] = Date.now() + this.config.getDataCacheLifetime().getMilliSeconds()
+        this.requestCacheTimeouts[url] = Date.now() + this.config.getDataCacheLifetime().milliSeconds
         this.config.queueWorker.doRequest(new UrlRequestData(this, url, scopeName))
       }
     }
@@ -164,7 +164,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
 
   public find<T extends DataModel>(dataProviderName:string, searchMap:ObjectMap|string):T
   {
-    return this.dataCollectionFactory.getExternalDataCollectionFactory().find(dataProviderName, searchMap)
+    return this.dataCollectionFactory.externalDataCollectionFactory.find(dataProviderName, searchMap)
   }
 
 
