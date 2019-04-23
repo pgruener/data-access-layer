@@ -28,6 +28,14 @@ export class FilterMarking<T extends DataModel>
     }
   }
 
+  /**
+   * Returns all {@link FilterRule|FilterRules} in a {@link FilterMarker} for a given property.
+   * 
+   * @method filterMarkersForProperty
+   * @param {string} propertyName 
+   * @param {(filterRule:FilterRule<Object>) => boolean} filterCallback 
+   * @return {FilterRuleMarker<FilterRule<Object>>[]}
+   */
   public filterMarkersForProperty(propertyName:string, filterCallback?:(filterRule:FilterRule<Object>) => boolean):FilterRuleMarker<FilterRule<Object>>[]
   {
     return this.filterRuleMarkers.filter((filterRuleMarker) => {

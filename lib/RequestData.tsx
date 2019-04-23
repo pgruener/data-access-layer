@@ -41,16 +41,15 @@ export abstract class RequestData<T>
 
   /**
    * Sets response and triggers further internal usage.
-   * @todo This method should be renamed to not pretend *just* being a setter with no underlying code.
    * 
-   * @method setResponse
+   * @method handleResponse
    * @param {ObjectMap|ObjectMap[]} response 
    */
-  setResponse(response:ObjectMap|ObjectMap[])
+  handleResponse(response:ObjectMap|ObjectMap[])
   {
     if (this._response)
     {
-      throw new Error('Setting response is only possible once.')
+      throw new Error('Handling response is only possible once.')
     }
     else
     {

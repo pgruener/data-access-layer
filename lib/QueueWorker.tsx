@@ -72,11 +72,11 @@ export class QueueWorker
 
       if (response instanceof Array)
       {
-        requestData.setResponse(response as ObjectMap[])
+        requestData.handleResponse(response as ObjectMap[])
       }
       else
       {
-        requestData.setResponse(response as ObjectMap)
+        requestData.handleResponse(response as ObjectMap)
       }
 
       // TODO: Error handling...

@@ -17,8 +17,8 @@ export class DataModelRequestData extends RequestData<DataModel> {
     this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel);
     this._payload = this._dataModel.dataProviderConfig.computePayloadForRequest(this);
   }
-  setResponse(response: ObjectMap) {
-    super.setResponse(response);
+  handleResponse(response: ObjectMap) {
+    super.handleResponse(response);
     if (this.action == 'create') {
       this._dataProvider.onAfterNewInstance(this.dataModel, this._response as ObjectMap);
     }
