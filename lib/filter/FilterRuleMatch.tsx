@@ -1,6 +1,6 @@
 import { FilterRule } from "./FilterRule";
 
-const MATCHER_FUNCTION = (value1:String, value2:string) => { return value2.toString().match(value1.toString()) != null }
+const MATCHER_FUNCTION = (value1:String, value2:string) => { return value1.toString().match(value2.toString()) != null }
 
 export class FilterRuleMatch extends FilterRule<String>
 {
