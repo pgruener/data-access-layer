@@ -49,7 +49,13 @@ export class FilterMarking<T extends DataModel>
     })
   }
 
-
+  /**
+   * Returns a {@link FilterRuleMarker} with all {@link FileRuleIn|FileRuleIns} for a given property name.
+   * 
+   * @method findInFilter
+   * @param {string} propertyName 
+   * @returns {FilterRuleMarker<FilterRuleIn<Object>>[]}
+   */
   public findInFilter(propertyName:string):FilterRuleMarker<FilterRuleIn<Object>>[]
   {
     return this.filterMarkersForProperty(propertyName, this.isFilterRuleIn) as FilterRuleMarker<FilterRuleIn<Object>>[]
@@ -66,6 +72,12 @@ export class FilterMarking<T extends DataModel>
     return filterRule instanceof FilterRuleIn
   }
 
+  /**
+   * Returns all {@link FilterRule|FilterRules} that are not marked as used.
+   * 
+   * @method getUnusedFilters
+   * @returns {FilterRule<Object>[]}
+   */
   public getUnusedFilters():FilterRule<Object>[]
   {
     return this.filterRuleMarkers.filter((filterRuleMarker) => {
