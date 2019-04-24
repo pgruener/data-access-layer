@@ -1,6 +1,30 @@
 import { FilterRule } from "./FilterRule";
 
-const MATCHER_FUNCTION = (value1:String, value2:string) => { return value1.toString().match(value2.toString()) != null }
+const MATCHER_FUNCTION = (value:String, regexp:string) => {
+
+  let REGEXP_MATCHER = /^\/(.*)\/([eimg]*)$/
+
+  /**
+   * @example
+   *   /.A/ig  => [ "/.A/ig", ".A", "ig" ]
+   */
+  let foundRegExp = regexp.toString().match(REGEXP_MATCHER)
+
+  let search
+
+  if (foundRegExp == null)
+  {
+    search = regexp
+  }
+  else
+  {
+    let pattern = foundRegExp[1]
+    let flags = foundRegExp[2]
+    search = new RegExp(pattern, flags)
+  }
+
+  return value.toString().match(search) != null
+}
 
 export class FilterRuleMatch extends FilterRule<String>
 {
