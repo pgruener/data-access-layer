@@ -3,6 +3,10 @@ import { DataModel } from "./DataModel";
 import { DataProvider } from "./DataProvider";
 import { RequestData } from "./RequestData";
 
+/**
+ * @class UrlRequestData
+ * @extends RequestData
+ */
 export class UrlRequestData extends RequestData<Object>
 {
   private _scopeName: string;
