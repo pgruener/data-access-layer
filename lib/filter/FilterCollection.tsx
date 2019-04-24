@@ -20,6 +20,14 @@ export class FilterCollection<T extends DataModel>
     this.add(filter, true)
   }
 
+  /**
+   * Triggers filtersChanged on listener, if optional skip parameter is not set to true.
+   * 
+   * @private
+   * @method triggerListener
+   * @param {boolean} [shouldSkipChangeListener] 
+   * @returns {boolean} <code>true</code>, if something changed, <code>false</code> otherwise.
+   */
   private triggerListener(shouldSkipChangeListener?:boolean):boolean
   {
     if (!shouldSkipChangeListener)
@@ -50,6 +58,14 @@ export class FilterCollection<T extends DataModel>
     return this.triggerListener(shouldSkipChangeListener)
   }
 
+  /**
+   * Removes a {@link FilterRule} or an array of FilterRules from the FilterCollection.
+   * Returns <code>true</code>, if the removal changed the filteredEntities of connected collections.
+   * 
+   * @method remove
+   * @param {FilterRule<T>|FilterRule<T>[]} filter to remove
+   * @returns {boolean} somethingChanged
+   */
   public remove<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
   {
     if (filter instanceof Array)
@@ -66,6 +82,13 @@ export class FilterCollection<T extends DataModel>
     return this.triggerListener()
   }
 
+  /**
+   * Removes the given FilterRule from the FilterCollection.
+   * 
+   * @private
+   * @method removeIntern
+   * @param {FilterRule} filterRule 
+   */
   private removeIntern<T>(filterRule:FilterRule<T>)
   {
     let index = this._filterRules.indexOf(filterRule)
@@ -75,6 +98,13 @@ export class FilterCollection<T extends DataModel>
     }
   }
 
+  /**
+   * Clears collection and sets the given {@link FilterRule} or array of FilterRules as new filters.
+   * 
+   * @method set
+   * @param {FilterRule} filter 
+   * @returns {boolean} somethingChanged
+   */
   public set<T>(filter:FilterRule<T>|FilterRule<T>[]):boolean
   {
     this.clear(true)
@@ -87,6 +117,12 @@ export class FilterCollection<T extends DataModel>
     return this.triggerListener(shouldSkipChangeListener)
   }
 
+  /**
+   * Applies all filterRules to the entities and returns filtered list of entities.
+   * @method run
+   * @param {T[]} allEntities 
+   * @returns {T[]} filteredEntities
+   */
   public run(allEntities:T[]):T[]
   {
     let filteredEntities:T[] = allEntities.slice(0)
@@ -103,6 +139,14 @@ export class FilterCollection<T extends DataModel>
     return this.removeEntitiesMarkedForDeletion(filteredEntities)
   }
 
+  /**
+   * Filters entities to not contain ones that are marked for deletion.
+   * 
+   * @private
+   * @method removeEntitiesMarkedForDeletion
+   * @param {T[]} entities 
+   * @returns {T[]}
+   */
   private removeEntitiesMarkedForDeletion(entities:T[]):T[]
   {
     return entities.filter((entity:T) => {
@@ -110,6 +154,9 @@ export class FilterCollection<T extends DataModel>
     })
   }
 
+  /**
+   * Attribute accessor for filterRules
+   */
   get filterRules():FilterRule<Object>[]
   {
     return this._filterRules
