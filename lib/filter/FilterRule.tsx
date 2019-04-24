@@ -70,11 +70,18 @@ export class FilterRule<T>
     return this._propertyName
   }
 
+  /**
+   * Informs, if the dataModel is accepted by the filterRule.
+   * 
+   * @method isInside
+   * @param {DataModel} dataModel 
+   * @returns {boolean}
+   */
   private isInside(dataModel:DataModel):boolean
   {
     let value = dataModel.getPropertyForFilter(this.propertyName) as T
 
-    return this.compareFunction(value, this._value)
+    return this.compareFunction(value, this.value)
   }
 
 
@@ -100,9 +107,15 @@ export class FilterRule<T>
     return filteredModels
   }
 
+  /**
+   * Returns the filterRule as url string to be transmitted to a backend.
+   * 
+   * @method asUrlString
+   * @returns {string}
+   */
   asUrlString()
   {
-    return `${this.propertyName}${encodeURIComponent(this.comparator.toString())}${encodeURIComponent(this._value.toString())}`
+    return `${this.propertyName}${encodeURIComponent(this.comparator.toString())}${encodeURIComponent(this.value.toString())}`
   }
 }
 
