@@ -111,6 +111,13 @@ export class FilterCollection<T extends DataModel>
     return this.add(filter)
   }
 
+  /**
+   * Clears the collection.
+   * 
+   * @method clear
+   * @param {boolean} [shouldSkipChangeListener] 
+   * @returns {boolean} somethingChanged
+   */
   public clear(shouldSkipChangeListener?:boolean):boolean
   {
     this._filterRules.length = 0
