@@ -70,18 +70,23 @@ export class QueueWorker
 
     this.backendConnector.doRequest(requestData).done((response:Object) => {
 
-      if (response instanceof Array)
+      let hasResponse = response != null
+
+      if (hasResponse)
       {
-        requestData.handleResponse(response as ObjectMap[])
-      }
-      else
-      {
-        requestData.handleResponse(response as ObjectMap)
+        if (response instanceof Array)
+        {
+          requestData.handleResponse(response as ObjectMap[])
+        }
+        else
+        {
+          requestData.handleResponse(response as ObjectMap)
+        }
       }
 
-      // TODO: Error handling...
-
-      this.onAfterRequestDone(queueName)
+      this.onAfterRequestDone(queueName, !hasResponse)
+    }, (reason:any) => {
+      console.log('Rejected...', reason)
     })
   }
 
@@ -91,12 +96,16 @@ export class QueueWorker
    * 
    * @method onAfterRequestDone
    * @param {string} queueName
+   * @param {boolean} [skipReduceQueue]
    */
-  private onAfterRequestDone(queueName:string)
+  private onAfterRequestDone(queueName:string, skipReduceQueue?:boolean)
   {
     let queue = this.requestQueues[queueName]
 
-    queue.shift()
+    if (!skipReduceQueue)
+    {
+      queue.shift()
+    }
 
     if (queue.length > 0)
     {
