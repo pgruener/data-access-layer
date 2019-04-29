@@ -12,15 +12,16 @@ export class DataModelRequestData extends RequestData<DataModel>
 {
   protected _propertiesSnapshot: ObjectMap;
   protected _changedPropertiesSnapshot: ObjectMap;
-  protected _dataModel: DataModel;
+  protected _dataModel:DataModel;
   protected readonly action: string | RequestVerb;
 
-  constructor(dataProvider: DataProvider<DataModel>, dataModel: DataModel, action: string | RequestVerb)
+  constructor(dataProvider: DataProvider<DataModel>, dataModel:DataModel, action:string|RequestVerb)
   {
     super(dataProvider);
+
     this._dataModel = dataModel;
-    this._propertiesSnapshot = dataModel.originalProperties; // TODO: Save Copy
-    this._changedPropertiesSnapshot = dataModel.dataProviderConfig.prepareForServer(dataModel); // TODO: return Copy AND Just do this with newly changed properties...
+    this._propertiesSnapshot = dataModel.originalProperties.asObjectMap(); // TODO: Clone instead
+    this._changedPropertiesSnapshot = dataModel.dataProviderConfig.prepareForServer(this);
     this.action = action;
     this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel);
     this._payload = this._dataModel.dataProviderConfig.computePayloadForRequest(this);
@@ -32,7 +33,7 @@ export class DataModelRequestData extends RequestData<DataModel>
 
     if (this.action == 'create')
     {
-      this._dataProvider.onAfterNewInstance(this.dataModel, this._response as ObjectMap);
+      this._dataProvider.onAfterNewInstance(this._dataModel, this._response as ObjectMap);
     }
     else
     {

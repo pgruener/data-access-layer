@@ -1,6 +1,7 @@
 import { DataCollection } from './DataCollection'
 import { DataModel } from './DataModel';
 import { DataModelListener } from "./DataModelListener";
+import { UrlRequestData } from './UrlRequestData';
 
 /**
  * The RootDataCollection holds all known data for one specific {@link DataModel|DataModel type}.
@@ -30,7 +31,7 @@ export class RootDataCollection<T extends DataModel> extends DataCollection<T> i
     })
 
     newEntities.forEach((entity:T) => {
-      let availableEntity = map[entity.computeIdentityHashCode()]
+      let availableEntity:T = map[entity.computeIdentityHashCode()]
       if (availableEntity)
       {
         availableEntity.mergeModel(entity)

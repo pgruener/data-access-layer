@@ -309,7 +309,7 @@ export abstract class DataProviderConfig
   }
 
   public computePayloadForRequest = (requestData:DataModelRequestData):ObjectMap => {
-    return requestData.dataModel.mapDataOut(requestData.changedPropertiesSnapshot)
+    return requestData.dataModel.mapDataOut(requestData)
   }
 
   public extractFilterCollectionForSelection = (dataCollection:DataCollection<DataModel>):FilterCollection<DataModel> =>
@@ -432,9 +432,9 @@ export abstract class DataProviderConfig
     return DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME
   }
 
-  public prepareForServer(dataModel:DataModel):ObjectMap
+  public prepareForServer(requestData:DataModelRequestData):ObjectMap
   {
-    return dataModel.mapDataOut(dataModel.changedProperties)
+    return requestData.dataModel.mapDataOut(requestData)
   }
 
   public unwrapFromServer(requestData:RequestData<DataModel>, objectMap:ObjectMap|ObjectMap[]):ObjectMap|ObjectMap[]

@@ -8,6 +8,8 @@ import { RequestData } from './RequestData';
 import { ActionRequestData } from "./ActionRequestData";
 import { DataModelRequestMetaData } from './DataModelRequestMetaData';
 import { DataModelState } from './DataModelState';
+import { DataModelPropertySet } from './DataModelPropertySet';
+import { DataModelRequestData } from './DataModelRequestData';
 
 export class DataModel
 {
@@ -16,8 +18,8 @@ export class DataModel
   private requestQueue:Array<DataModelRequestMetaData> = []
   
   protected dataProvider:DataProvider<DataModel>
-  private properties:ObjectMap
-  protected clientChangedProperties:ObjectMap = {}
+  private properties:DataModelPropertySet
+  protected clientChangedProperties:DataModelPropertySet = new DataModelPropertySet()
   private markedForDeletion = false
   private transactionRunning = false
   private instanceNr:number
@@ -29,7 +31,7 @@ export class DataModel
 
   constructor(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean)
   {
-    this.properties = this.mapDataIn(properties)
+    this.properties =  new DataModelPropertySet(this.mapDataIn(properties))
     this.dataProvider = dataProvider
     this.instanceNr = ++DataModel.INSTANCE_COUNTER
 
@@ -130,25 +132,25 @@ export class DataModel
     }
   }
   
-  public getProperty<T>(key:string, fallbackValue?:T)
+  public getProperty<T>(propertyName:string, fallbackValue?:T)
   {
-    if (this.clientChangedProperties.hasOwnProperty(key))
+    if (this.clientChangedProperties.hasProperty(propertyName))
     {
-      return this.clientChangedProperties[key] as T
+      return this.clientChangedProperties.getValue<T>(propertyName)
     }
 
-    return this.properties[key] as T || fallbackValue
+    return this.properties.getValue<T>(propertyName) || fallbackValue
   }
 
-  public getPropertyForFilter(key:string):any
+  public getPropertyForFilter(propertyName:string):any
   {
-    switch (key)
+    switch (propertyName)
     {
       case IDENTITY_HASH_CODE_PROPERTY_NAME:
         return this.computeIdentityHashCode()
 
       default:
-        return this.getProperty(key)
+        return this.getProperty(propertyName)
     }
   }
 
@@ -164,42 +166,42 @@ export class DataModel
     return isPersisted
   }
 
-  removeProperty(key:string)
+  removeProperty(propertyName:string)
   {
-    delete this.clientChangedProperties[key]
-    delete this.properties[key]
+    this.clientChangedProperties.removeProperty(propertyName)
+    this.properties.removeProperty(propertyName)
     this.triggerChangeListeners()
   }
 
   resetChanges()
   {
-    this.clientChangedProperties = {}
+    this.clientChangedProperties.clear()
     this.triggerChangeListeners()
   }
 
-  removePropertyChange(key:string)
+  removePropertyChange(propertyName:string)
   {
-    delete this.clientChangedProperties[key]
+    this.clientChangedProperties.removeProperty(propertyName)
     this.triggerChangeListeners()
   }
 
-  public hasProperty(key:string):boolean
+  public hasProperty(propertyName:string):boolean
   {
-    return this.getProperty(key) !== undefined
+    return this.getProperty(propertyName) !== undefined
   }
 
-  public setProperty(key:string, value:Object, skipTriggerListeners?:boolean):boolean
+  public setProperty(propertyName:string, value:Object, skipTriggerListeners?:boolean):boolean
   {
     if (this.isMarkedForDeletion())
     {
-      throw new Error(`You tried to set a property '${key}' of a datModel ${this} which is already marked for deletion. This is inappropriate.`)
+      throw new Error(`You tried to set a property '${propertyName}' of a datModel ${this} which is already marked for deletion. This is inappropriate.`)
     }
 
-    let changed = this.properties[key] !== value || this.clientChangedProperties[key] !== value
+    let changed = !this.properties.hasProperty(propertyName, value) || !this.clientChangedProperties.hasProperty(propertyName, value)
 
     if (changed)
     {
-      this.clientChangedProperties[key] = value
+      this.clientChangedProperties.set(propertyName, value)
 
       if (!skipTriggerListeners)
       {
@@ -214,7 +216,7 @@ export class DataModel
   {
     if (shouldClearProperties)
     {
-      this.properties = {}
+      this.properties.clear()
     }
 
     let anythingChanged = false
@@ -230,25 +232,25 @@ export class DataModel
     }
   }
 
-  get originalProperties():ObjectMap
+  get originalProperties():DataModelPropertySet
   {
     return this.properties
   }
 
 
-  get changedProperties():ObjectMap
+  get changedProperties():DataModelPropertySet
   {
     return this.clientChangedProperties
   }
 
-  protected mapDataIn(objectMap:ObjectMap):ObjectMap
+  protected mapDataIn(/*requestData:DataModelRequestData<DataModel>, */objectMap:ObjectMap):ObjectMap
   {
     return objectMap
   }
 
-  public mapDataOut(objectMap:ObjectMap):ObjectMap
+  public mapDataOut(requestData:DataModelRequestData):ObjectMap
   {
-    return objectMap
+    return requestData.dataModel.clientChangedProperties.asObjectMap()
   }
 
   private hasChanges()
@@ -278,7 +280,7 @@ export class DataModel
       }
       else
       {
-        this.setProperties(dataModel.properties, true)
+        this.setProperties(dataModel.properties.exportAsObjectMap(), true)
       }
     }
   }
@@ -304,12 +306,12 @@ export class DataModel
     
     if (shouldMerge)
     {
-      Object.keys(objectMap).forEach((key) => {
-        if (this.properties[key] != objectMap[key])
+      Object.keys(objectMap).forEach((propertyName) => {
+        if (!this.properties.hasProperty(propertyName, objectMap[propertyName]))
         {
-          delete this.clientChangedProperties[key]
+          this.clientChangedProperties.removeProperty(propertyName)
   
-          this.properties[key] = objectMap[key]
+          this.properties.set(propertyName, objectMap[propertyName])
           anythingChanged = true
         }
       })

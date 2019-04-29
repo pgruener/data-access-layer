@@ -7,9 +7,9 @@ import { DataModelRequestData } from "./DataModelRequestData";
  * @class ActionRequestData
  * @extends DataModelRequestData
  */
-export class ActionRequestData<T extends DataModel> extends DataModelRequestData
+export class ActionRequestData extends DataModelRequestData
 {
-  constructor(dataProvider: DataProvider<DataModel>, dataModel: T, action: string, parameters: ObjectMap, payload: ObjectMap)
+  constructor(dataProvider: DataProvider<DataModel>, dataModel:DataModel, action: string, parameters: ObjectMap, payload: ObjectMap)
   {
     super(dataProvider, dataModel, action);
     this._actionUrl = dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, dataModel, parameters);

@@ -1,0 +1,1 @@
+export type DataModelPropertyMetaDate = 'created'|'last_change'|'last_export'|'returned_value'
