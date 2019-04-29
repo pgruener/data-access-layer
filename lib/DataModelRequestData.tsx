@@ -3,6 +3,7 @@ import { RequestVerb } from "./RequestVerb";
 import { DataModel } from "./DataModel";
 import { DataProvider } from "./DataProvider";
 import { RequestData } from "./RequestData";
+import { UnmodifiableDataModelPropertySet } from "./UnmodifiableDataModelPropertySet";
 
 /**
  * @class DataModelRequestData
@@ -10,21 +11,28 @@ import { RequestData } from "./RequestData";
  */
 export class DataModelRequestData extends RequestData<DataModel>
 {
-  protected _propertiesSnapshot: ObjectMap;
-  protected _changedPropertiesSnapshot: ObjectMap;
+  protected _propertiesSnapshot:UnmodifiableDataModelPropertySet;
+  protected _changedPropertiesSnapshot:UnmodifiableDataModelPropertySet;
   protected _dataModel:DataModel;
-  protected readonly action: string | RequestVerb;
+  protected _dataForRequest:ObjectMap
+  protected readonly action:string | RequestVerb;
 
   constructor(dataProvider: DataProvider<DataModel>, dataModel:DataModel, action:string|RequestVerb)
   {
     super(dataProvider);
 
     this._dataModel = dataModel;
-    this._propertiesSnapshot = dataModel.originalProperties.asObjectMap(); // TODO: Clone instead
-    this._changedPropertiesSnapshot = dataModel.dataProviderConfig.prepareForServer(this);
+    this._propertiesSnapshot = dataModel.originalProperties.unmodifiableClone();
+    this._dataForRequest = dataModel.dataProviderConfig.prepareForServer(this);
+    this._changedPropertiesSnapshot = dataModel.changedProperties.unmodifiableClone() // Must be done AFTER prepared for server
     this.action = action;
-    this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel);
+    this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel)
     this._payload = this._dataModel.dataProviderConfig.computePayloadForRequest(this);
+  }
+
+  get dataForRequest()
+  {
+    return this._dataForRequest
   }
 
   handleResponse(response: ObjectMap)

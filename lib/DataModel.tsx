@@ -250,7 +250,7 @@ export class DataModel
 
   public mapDataOut(requestData:DataModelRequestData):ObjectMap
   {
-    return requestData.dataModel.clientChangedProperties.asObjectMap()
+    return requestData.dataForRequest
   }
 
   private hasChanges()
