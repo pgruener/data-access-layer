@@ -41,12 +41,20 @@ export class DataModelRequestData extends RequestData<DataModel>
 
     if (this.action == 'create')
     {
-      this._dataProvider.onAfterNewInstance(this._dataModel, this._response as ObjectMap);
+      this._dataProvider.onAfterNewInstance(this);
     }
     else
     {
-      this._dataProvider.onAfterUpdate(this._response);
+      this._dataProvider.onAfterUpdate(this);
     }
+  }
+
+  /**
+   * Attribute accessor for response
+   */
+  get response()
+  {
+    return this._response as ObjectMap
   }
 
   /**

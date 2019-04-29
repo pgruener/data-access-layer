@@ -168,7 +168,11 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   }
 
 
-  public onAfterNewInstance = (dataModel:T, objectMaps:ObjectMap) => {
+  public onAfterNewInstance = (dataModelRequestData:DataModelRequestData) => {
+
+    let dataModel = dataModelRequestData.dataModel as T
+    let objectMaps = dataModelRequestData.response
+
     dataModel.mergeChanges(objectMaps)
 
     delete this._allEntities[CLIENT_ID_ATTRIBUTE]
@@ -177,7 +181,9 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     this._allEntities[dataModel.computeIdentityHashCode()] = dataModel
   }
 
-  public onAfterUpdate = (objectMaps:ObjectMap|ObjectMap[]) => {
+  public onAfterUpdate = (dataModelRequestData:DataModelRequestData) => {
+
+    let objectMaps = dataModelRequestData.response as ObjectMap|ObjectMap[]
 
     if (objectMaps.constructor == Array)
     {
