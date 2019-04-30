@@ -171,7 +171,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
   public onAfterNewInstance = (dataModelRequestData:DataModelRequestData) => {
 
     let dataModel = dataModelRequestData.dataModel as T
-    let objectMaps = dataModelRequestData.response
+    let objectMaps = dataModelRequestData.response as ObjectMap
 
     dataModel.mergeChanges(objectMaps)
 
