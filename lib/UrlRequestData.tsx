@@ -21,7 +21,7 @@ export class UrlRequestData extends RequestData<Object>
   handleResponse(response: ObjectMap[])
   {
     super.handleResponse(response);
-    this._dataProvider.onLoadedData(this._scopeName, this._response as ObjectMap[]);
+    this._dataProvider.onLoadedData(this);
   }
   
   /**

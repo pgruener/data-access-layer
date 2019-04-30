@@ -93,7 +93,10 @@ export class DataModel
   {
     if (!this.transactionRunning)
     {
-      this.dataProvider.dataModelAsksForSave(this)
+      if (this.changedProperties.hasChangesSinceLastExport())
+      {
+        this.dataProvider.dataModelAsksForSave(this)
+      }
     }
   }
 

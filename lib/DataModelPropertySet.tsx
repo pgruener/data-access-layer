@@ -82,6 +82,13 @@ export class DataModelPropertySet
     return map
   }
 
+  public hasChangesSinceLastExport():boolean
+  {
+    return Object.keys(this.properties).filter((propertyName) => {
+      return this.properties[propertyName].shouldExport()
+    }).length != 0
+  }
+
   public asObjectMap():ObjectMap
   {
     let map:ObjectMap = {}

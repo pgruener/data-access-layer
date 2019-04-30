@@ -56,4 +56,12 @@ export abstract class RequestData<T>
       this._response = this._dataProvider.config.unwrapFromServer(this, response)
     }
   }
+
+  /**
+   * Attribute accessor for response
+   */
+  get response()
+  {
+    return this._response as ObjectMap|ObjectMap[]
+  }
 }

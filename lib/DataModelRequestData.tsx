@@ -50,14 +50,6 @@ export class DataModelRequestData extends RequestData<DataModel>
   }
 
   /**
-   * Attribute accessor for response
-   */
-  get response()
-  {
-    return this._response as ObjectMap
-  }
-
-  /**
    * Attribute accessor for propertiesSnapshot
    */
   get propertiesSnapshot()

@@ -68,7 +68,6 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-
   private loadData(scopeName:string, collection?:DataCollection<T>)
   {
     if (this.config.hasUrl(scopeName))
@@ -94,8 +93,9 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
   }
 
-  onLoadedData(scopeName:string, objectMaps:ObjectMap[])
+  onLoadedData(urlRequestData:UrlRequestData)
   {
+    let objectMaps = urlRequestData.response as ObjectMap[]
     if (objectMaps)
     {
       let entities = new Array()
@@ -104,7 +104,7 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
         entities.push(this.createDataModel(objectMap))
       })
 
-      this.buildRootDataCollection(scopeName).mergeEntities(entities)
+      this.buildRootDataCollection(urlRequestData.scopeName).mergeEntities(entities)
     }
   }
 
