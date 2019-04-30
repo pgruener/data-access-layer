@@ -260,6 +260,14 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     {
       this.onBeforeDelete(dataModel)
     }
+    else
+    {
+      if (!dataModel.changedProperties.hasChangesSinceLastExport())
+      {
+        // Dont do any request, if there is nothing to export.
+        return
+      }
+    }
 
     this.doRequest(new DataModelRequestData(this, dataModel, requestVerb))
   }
