@@ -34,7 +34,15 @@ export class DataModelPropertySet
 
   public getValue<T>(propertyName:string)
   {
-    return this.properties[propertyName].value as T
+    if (this.properties[propertyName] && this.properties[propertyName].value)
+    {
+      return this.properties[propertyName].value as T
+    }
+    else
+    {
+      return undefined
+    }
+    // return this.properties[propertyName].value as T
   }
   
   public getMetaDates(propertyName:string)

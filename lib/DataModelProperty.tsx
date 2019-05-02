@@ -3,7 +3,7 @@ import { DataModelPropertyMetaDate } from './internal'
 export class DataModelProperty
 {
   private _value:any
-  protected propertyMetaDates:{[s:string]: Date}
+  protected propertyMetaDates:{[s:string]: Date} = {}
 
   constructor(value:any)
   {
