@@ -1,15 +1,15 @@
-import { DataModelListener } from './DataModelListener'
-import { DataProviderConfig } from './DataProviderConfig';
-import { DataProvider } from './DataProvider';
-import { ObjectMap } from "./ObjectMap";
+import { DataModelListener } from './internal'
+import { DataProviderConfig } from './internal';
+import { DataProvider } from './internal';
+import { ObjectMap } from "./internal";
 
-import { CLIENT_ID_ATTRIBUTE, IDENTITY_HASH_CODE_PROPERTY_NAME } from './Constants';
-import { RequestData } from './RequestData';
-import { ActionRequestData } from "./ActionRequestData";
-import { DataModelRequestMetaData } from './DataModelRequestMetaData';
-import { DataModelState } from './DataModelState';
-import { DataModelPropertySet } from './DataModelPropertySet';
-import { DataModelRequestData } from './DataModelRequestData';
+import { CLIENT_ID_ATTRIBUTE, IDENTITY_HASH_CODE_PROPERTY_NAME } from './internal';
+import { RequestData } from './internal';
+import { ActionRequestData } from "./internal";
+import { DataModelRequestMetaData } from './internal';
+import { DataModelState } from './internal';
+import { DataModelPropertySet } from './internal';
+import { DataModelRequestData } from './internal';
 
 export class DataModel
 {

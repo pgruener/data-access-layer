@@ -1,18 +1,18 @@
-import { DataCollection } from './DataCollection'
-import { RootDataCollection } from './RootDataCollection'
-import { DataProviderConfig } from './DataProviderConfig'
-import { DataCollectionChangeProvider } from './DataCollectionChangeProvider'
-import { DataCollectionChangeListener } from './DataCollectionChangeListener'
-import { DataCollectionOptions } from './DataCollectionOptions'
-import { DataCollectionFactory } from './DataCollectionFactory';
-import { ObjectMap } from "./ObjectMap";
-import { DataProviderState } from './DataProviderState';
-import { DataModel } from './DataModel';
-import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './Constants';
-import { RequestData } from './RequestData';
-import { DataModelRequestData } from "./DataModelRequestData";
-import { UrlRequestData } from "./UrlRequestData";
-import { RequestVerb } from './RequestVerb';
+import { DataCollection } from './internal'
+import { RootDataCollection } from './internal'
+import { DataProviderConfig } from './internal'
+import { DataCollectionChangeProvider } from './internal'
+import { DataCollectionChangeListener } from './internal'
+import { DataCollectionOptions } from './internal'
+import { DataCollectionFactory } from './internal';
+import { ObjectMap } from "./internal";
+import { DataProviderState } from './internal';
+import { DataModel } from './internal';
+import { DEFAULT_SCOPE_NAME, CLIENT_ID_ATTRIBUTE } from './internal';
+import { RequestData } from './internal';
+import { DataModelRequestData } from "./internal";
+import { UrlRequestData } from "./internal";
+import { RequestVerb } from './internal';
 
 export class DataProvider<T extends DataModel> implements DataCollectionChangeProvider<T>, DataCollectionChangeListener<T> {
   private _state:DataProviderState = 'not_inited'

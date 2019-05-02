@@ -1,5 +1,5 @@
-import { RequestData } from "./RequestData";
-import { DataModel } from "./DataModel";
+import { RequestData } from "./internal";
+import { DataModel } from "./internal";
 
 /**
  * @class DataModelRequestMetaData

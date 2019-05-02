@@ -1,7 +1,7 @@
-import { ObjectMap } from "./ObjectMap";
-import { DataModel } from "./DataModel";
-import { DataProvider } from "./DataProvider";
-import { RequestData } from "./RequestData";
+import { ObjectMap } from "./internal";
+import { DataModel } from "./internal";
+import { DataProvider } from "./internal";
+import { RequestData } from "./internal";
 
 /**
  * @class UrlRequestData

@@ -1,14 +1,14 @@
-import { DataProvider} from "./DataProvider";
-import { DataCollection } from './DataCollection'
-import { DataCollectionOptions } from "./DataCollectionOptions";
-import { DataModel } from "./DataModel";
-import { ObjectMap } from "./ObjectMap";
-import { ExternalDataCollectionFactory } from "./ExternalDataCollectionFactory";
-import { DataProviderConfigConstructor } from "./DataProviderConfigConstructor";
-import { DataModelConstructor } from "./DataModelConstructor";
-import { StringOperations } from './StringOperations'
-import { QueueWorker } from "./QueueWorker";
-import { BackendConnector } from "./BackendConnector";
+import { DataProvider} from "./internal";
+import { DataCollection } from './internal'
+import { DataCollectionOptions } from "./internal";
+import { DataModel } from "./internal";
+import { ObjectMap } from "./internal";
+import { ExternalDataCollectionFactory } from "./internal";
+import { DataProviderConfigConstructor } from "./internal";
+import { DataModelConstructor } from "./internal";
+import { StringOperations } from './internal'
+import { QueueWorker } from "./internal";
+import { BackendConnector } from "./internal";
 
 /**
  * An instance of DataCollectionFactory is used to operate with the core concepts of the data access layer.

@@ -1,6 +1,6 @@
-import { ObjectMap } from "./ObjectMap";
-import { DataModel } from "./DataModel";
-import { DataProviderConfig } from "./DataProviderConfig";
+import { ObjectMap } from "./internal";
+import { DataModel } from "./internal";
+import { DataProviderConfig } from "./internal";
 
 export interface DataModelConstructor<T extends DataModel>
 {

@@ -1,5 +1,5 @@
-import { DataCollection } from './DataCollection';
-import { DataModel } from './DataModel';
+import { DataCollection } from './internal';
+import { DataModel } from './internal';
 
 /**
  * @interface DataCollectionChangeListener

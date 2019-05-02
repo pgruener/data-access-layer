@@ -1,7 +1,7 @@
-import { DataCollection } from './DataCollection'
-import { DataModelListener } from "./DataModelListener";
-import { DataCollectionChangeListener } from "./DataCollectionChangeListener";
-import { DataModel } from "./DataModel";
+import { DataCollection } from './internal'
+import { DataModelListener } from "./internal";
+import { DataCollectionChangeListener } from "./internal";
+import { DataModel } from "./internal";
 
 /**
  * DataComponentUpdater registers as listener for models and collections added.

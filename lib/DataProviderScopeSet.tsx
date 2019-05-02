@@ -1,4 +1,4 @@
-import { DataProviderScope } from "./DataProviderScope";
+import { DataProviderScope } from "./internal";
 
 export interface DataProviderScopeSet
 {

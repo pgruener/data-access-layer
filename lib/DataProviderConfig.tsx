@@ -1,23 +1,23 @@
-import { ActionUrlSet } from './ActionUrlSet'
-import { DataModel } from './DataModel';
-import { ActionUrlConfig } from "./ActionUrlConfig";
-import { DataProviderScopeSet } from "./DataProviderScopeSet";
-import { ObjectMap } from "./ObjectMap";
-import { Duration } from "./Duration";
-import { DataProviderInitialRequestMoment } from "./DataProviderInitialRequestMoment";
+import { ActionUrlSet } from './internal'
+import { DataModel } from './internal';
+import { ActionUrlConfig } from "./internal";
+import { DataProviderScopeSet } from "./internal";
+import { ObjectMap } from "./internal";
+import { Duration } from "./internal";
+import { DataProviderInitialRequestMoment } from "./internal";
 import { FilterCollection } from "./filter/FilterCollection";
-import { DataCollection } from "./DataCollection";
-import { DEFAULT_SCOPE_NAME, DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from './Constants';
-import { DataProviderScope } from "./DataProviderScope";
+import { DataCollection } from "./internal";
+import { DEFAULT_SCOPE_NAME, DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from './internal';
+import { DataProviderScope } from "./internal";
 import { FilterMarking } from "./filter/FilterMarking";
 import { NotEnoughFiltersError } from "./filter/NotEnoughFiltersError";
 import { TooManyFiltersError } from "./filter/TooManyFiltersError";
 import { FilterRuleIn } from "./filter/FilterRuleIn";
 import { FilterRule } from "./filter/FilterRule";
 import { FilterRuleMarker } from "./filter/FilterRuleMarker";
-import { QueueWorker } from "./QueueWorker";
-import { RequestData } from './RequestData';
-import { DataModelRequestData } from "./DataModelRequestData";
+import { QueueWorker } from "./internal";
+import { RequestData } from './internal';
+import { DataModelRequestData } from "./internal";
 
 export abstract class DataProviderConfig
 {

@@ -1,4 +1,4 @@
-import { DataModel } from "./DataModel";
+import { DataModel } from "./internal";
 
 /**
  * Used to observe changes in {@link DataModel|DataModels}.

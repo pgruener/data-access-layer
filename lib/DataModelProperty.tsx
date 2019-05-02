@@ -1,4 +1,4 @@
-import { DataModelPropertyMetaDate } from './DataModelPropertyMetaDate'
+import { DataModelPropertyMetaDate } from './internal'
 
 export class DataModelProperty
 {

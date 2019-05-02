@@ -1,4 +1,4 @@
-import { HttpMethod } from "./HttpMethod";
+import { HttpMethod } from "./internal";
 
 /**
  * @interface ActionUrl

@@ -1,7 +1,4 @@
-import { DataModelPropertySet } from "./DataModelPropertySet";
-import { ObjectMap } from "./ObjectMap";
-import { UnmodifiableDataModelProperty } from "./UnmodifiableDataModelProperty";
-import { ClassUnmodifiableError } from "./ClassUnmodifiableError";
+import { DataModelPropertySet, ObjectMap, UnmodifiableDataModelProperty, ClassUnmodifiableError } from "./internal";
 
 export class UnmodifiableDataModelPropertySet extends DataModelPropertySet
 {

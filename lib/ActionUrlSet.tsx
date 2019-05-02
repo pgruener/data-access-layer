@@ -1,8 +1,8 @@
-import { ActionUrl } from "./ActionUrl";
-import { ActionUrlConfig } from "./ActionUrlConfig";
-import { DataModel } from "./DataModel";
-import { HttpMethod } from "./HttpMethod";
-import { ObjectMap } from "./ObjectMap";
+import { ActionUrl } from "./internal";
+import { ActionUrlConfig } from "./internal";
+import { DataModel } from "./internal";
+import { HttpMethod } from "./internal";
+import { ObjectMap } from "./internal";
 
 const FALLBACK_HTTP_METHOD:HttpMethod = 'POST';
 

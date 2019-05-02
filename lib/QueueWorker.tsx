@@ -1,9 +1,9 @@
-import { BackendConnector } from "./BackendConnector";
-import { DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from "./Constants";
-import { RequestData } from "./RequestData";
-import { DataModelRequestData } from "./DataModelRequestData";
-import { DataModel } from "./DataModel";
-import { ObjectMap } from "./ObjectMap";
+import { BackendConnector } from "./internal";
+import { DEFAULT_BACKEND_CONNECTOR_QUEUE_NAME } from "./internal";
+import { RequestData } from "./internal";
+import { DataModelRequestData } from "./internal";
+import { DataModel } from "./internal";
+import { ObjectMap } from "./internal";
 
 /**
  * The QueueWorker is the single entry point for the data access layer to talk to its {@link BackendConnector}.

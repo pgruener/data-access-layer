@@ -1,5 +1,5 @@
-import { DataModel } from "./DataModel";
-import { ObjectMap } from "./ObjectMap";
+import { DataModel } from "./internal";
+import { ObjectMap } from "./internal";
 
 /**
  * @interface ExternalDataCollectionFactory

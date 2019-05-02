@@ -1,9 +1,10 @@
-import { ObjectMap } from "./ObjectMap";
-import { RequestVerb } from "./RequestVerb";
-import { DataModel } from "./DataModel";
-import { DataProvider } from "./DataProvider";
-import { RequestData } from "./RequestData";
-import { UnmodifiableDataModelPropertySet } from "./UnmodifiableDataModelPropertySet";
+import { 
+  ObjectMap,
+  RequestVerb,
+  DataModel,
+  DataProvider,
+  RequestData,
+  UnmodifiableDataModelPropertySet } from "./internal";
 
 /**
  * @class DataModelRequestData

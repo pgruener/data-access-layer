@@ -1,7 +1,7 @@
-import { ObjectMap } from "./ObjectMap";
-import { DataModel } from "./DataModel";
-import { ActionUrl } from "./ActionUrl";
-import { DataProvider } from "./DataProvider";
+import { ObjectMap } from "./internal";
+import { DataModel } from "./internal";
+import { ActionUrl } from "./internal";
+import { DataProvider } from "./internal";
 
 /**
  * RequestData contains every information needed for a {@link BackendConnector} to decide,

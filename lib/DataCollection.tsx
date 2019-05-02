@@ -1,11 +1,11 @@
-import { DataCollectionChangeListener } from './DataCollectionChangeListener'
-import { DataCollectionChangeProvider } from './DataCollectionChangeProvider'
-import { DataCollectionConfig } from './DataCollectionConfig'
+import { DataCollectionChangeListener } from './internal'
+import { DataCollectionChangeProvider } from './internal'
+import { DataCollectionConfig } from './internal'
 import { FilterRule } from './filter/FilterRule'
 import { FilterCollection } from './filter/FilterCollection';
-import { DataProvider } from './DataProvider';
-import { DataModel } from './DataModel';
-import { ApplyFilterMode } from './ApplyFilterMode';
+import { DataProvider } from './internal';
+import { DataModel } from './internal';
+import { ApplyFilterMode } from './internal';
 
 /**
  * @class DataCollection

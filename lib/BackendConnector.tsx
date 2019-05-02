@@ -1,5 +1,5 @@
 import * as Promise from 'Promise'
-import { RequestData } from './RequestData';
+import { RequestData } from './internal';
 
 /**
  * The application using the data access layer must provide an instance

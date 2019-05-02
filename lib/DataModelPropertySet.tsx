@@ -1,6 +1,4 @@
-import { DataModelProperty } from "./DataModelProperty";
-import { ObjectMap } from "./ObjectMap";
-import { UnmodifiableDataModelPropertySet } from "./UnmodifiableDataModelPropertySet";
+import { DataModelProperty, ObjectMap, UnmodifiableDataModelPropertySet } from "./internal";
 
 export class DataModelPropertySet
 {

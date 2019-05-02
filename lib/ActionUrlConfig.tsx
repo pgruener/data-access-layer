@@ -1,4 +1,4 @@
-import { ActionUrl } from './ActionUrl'
+import { ActionUrl } from './internal'
 
 /**
  * ActionUrlConfig allows every string to be the key of an action.

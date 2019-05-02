@@ -1,9 +1,9 @@
-import { DataCollectionChangeProvider } from './DataCollectionChangeProvider'
+import { DataCollectionChangeProvider } from './internal'
 import { FilterRule } from './filter/FilterRule'
-import { DataProvider } from './DataProvider';
-import { DataCollectionChangeListener } from './DataCollectionChangeListener';
-import { DataModel } from './DataModel';
-import { DataCollection } from './DataCollection';
+import { DataProvider } from './internal';
+import { DataCollectionChangeListener } from './internal';
+import { DataModel } from './internal';
+import { DataCollection } from './internal';
 
 /**
  * @interface DataCollectionConfig

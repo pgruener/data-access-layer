@@ -1,6 +1,5 @@
-import { DataModelProperty } from "./DataModelProperty";
-import { DataModelPropertyMetaDate } from "./DataModelPropertyMetaDate";
-import { ClassUnmodifiableError } from './ClassUnmodifiableError'
+import { DataModelProperty , DataModelPropertyMetaDate , ClassUnmodifiableError } from "./internal";
+
 export class UnmodifiableDataModelProperty extends DataModelProperty
 {
   constructor(value:any, propertyMetaDates:{[s:string]: Date})
