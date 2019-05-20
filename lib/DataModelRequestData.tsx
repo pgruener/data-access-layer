@@ -24,6 +24,7 @@ export class DataModelRequestData extends RequestData<DataModel>
 
     this._dataModel = dataModel;
     this._propertiesSnapshot = dataModel.originalProperties.unmodifiableClone();
+    this._dataForRequest = dataModel.changedProperties.asObjectMap();
     this._dataForRequest = dataModel.dataProviderConfig.prepareForServer(this);
     this._changedPropertiesSnapshot = dataModel.changedProperties.unmodifiableClone() // Must be done AFTER prepared for server
     this.action = action;
