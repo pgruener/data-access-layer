@@ -53,6 +53,7 @@ export class DataModel
 
   private triggerChangeListeners()
   {
+    console.log('triggerChangeListeners')
     // console.log('DataModel - trigger listeners', this.instanceNr)
 
     this.criticalListeners.forEach((listener) => {
@@ -187,6 +188,7 @@ export class DataModel
 
   public hasProperty(propertyName:string):boolean
   {
+    console.log(this.getProperty(propertyName), propertyName)
     return this.getProperty(propertyName) !== undefined
   }
 
@@ -293,13 +295,16 @@ export class DataModel
       return true
     }
 
-    return new Date(this.getProperty(updatedAtAttributeName)) < new Date(objectMap[updatedAtAttributeName].toString())
+    let a = new Date(this.getProperty(updatedAtAttributeName)).getTime()
+    let b = new Date(objectMap[updatedAtAttributeName].toString()).getTime()
+    console.log(`${a} == ${b} ? ${!(a > b) && !(a < b)}`)
+    console.log(this.changedProperties.exportAsObjectMap())
+    return a < b
   }
 
   mergeChanges(objectMap:ObjectMap)
   {
     objectMap = this.mapDataIn(objectMap)
-
     let anythingChanged = false
 
     let shouldMerge = this.shouldMerge(objectMap)

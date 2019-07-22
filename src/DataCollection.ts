@@ -135,14 +135,13 @@ export class DataCollection<T extends DataModel> implements DataCollectionChange
   public find(searchMap:{[s:string]: Object}|string):T
   {
     let entity:T = null
-    let shouldCompareByIdentityHashCode = typeof searchMap == 'string'
     let mapAsMap = searchMap as {[s:string]: Object}
 
     this.filteredEntities.some((currentEntity:T) => {
 
       let shouldUseEntity = true
 
-      if (shouldCompareByIdentityHashCode)
+      if (typeof searchMap == 'string')
       {
         shouldUseEntity = currentEntity.computeIdentityHashCode() == searchMap
       }
