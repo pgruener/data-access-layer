@@ -85,7 +85,7 @@ export class QueueWorker
       }
 
       this.onAfterRequestDone(queueName, !hasResponse)
-    }, (reason:any) => {
+    }, (reason: {status: number, statusText: string }) => {
       console.log('Rejected...', reason)
     })
   }
