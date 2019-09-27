@@ -22,7 +22,8 @@ export class DataModelPropertySet
   public hasProperty(propertyName:string, value?:any)
   {
     let hasProperty = this.properties.hasOwnProperty(propertyName)
-    if (hasProperty && value)
+    // Changed "value" to "value !== undefined" to also safe props like "null" or "false"
+    if (hasProperty && value !== undefined)
     {
       return this.getValue(propertyName) === value
     }
