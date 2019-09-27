@@ -35,7 +35,8 @@ export class DataModelPropertySet
 
   public getValue<T>(propertyName:string)
   {
-    if (this.properties[propertyName] && this.properties[propertyName].value)
+    // Changed "this.properties[propertyName].value" to "this.properties[propertyName].value !== undefined" to also safe props like "null" or "false"
+    if (this.properties[propertyName] && this.properties[propertyName].value !== undefined)
     {
       return this.properties[propertyName].value as T
     }
