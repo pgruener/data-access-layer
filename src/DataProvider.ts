@@ -173,9 +173,10 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     let dataModel = dataModelRequestData.dataModel as T
     let objectMaps = dataModelRequestData.response as ObjectMap
 
+    // debugger
     dataModel.mergeChanges(objectMaps)
 
-    delete this._allEntities[CLIENT_ID_ATTRIBUTE]
+    delete this._allEntities[dataModel.computeIdentityHashCode(true)]
     dataModel.removeProperty(CLIENT_ID_ATTRIBUTE)
 
     this._allEntities[dataModel.computeIdentityHashCode()] = dataModel

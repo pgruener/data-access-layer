@@ -326,9 +326,9 @@ export class DataModel
    * @return {string} identityHashCode
    * @see {DataModel.computeIdentityHashCode}
    */
-  computeIdentityHashCode():string
+  computeIdentityHashCode(computeOnlyWithClientIdAttribute?: boolean):string
   {
-    return DataModel.computeIdentityHashCode(this, this.dataProvider.config)
+    return DataModel.computeIdentityHashCode(this, this.dataProvider.config, computeOnlyWithClientIdAttribute)
   }
 
   public performAction = (action:string, actionVariables:ObjectMap, payload:ObjectMap) =>
@@ -350,28 +350,30 @@ export class DataModel
    * @return {string} identityHashCode
    * @see {DataProviderConfig.getIdentityRelevantAttributeNames}
    */
-  public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig):string
+  public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig, computeOnlyWithClientIdAttribute?: boolean):string
   {
-    let identityHashCode = dataProviderConfig.dataProviderName + '_'
-
-    let attributeNames = dataProviderConfig.getIdentityRelevantAttributeNames()
+    let identityHashCode = dataProviderConfig.dataProviderName
+    // debugger
+    let attributeNames = computeOnlyWithClientIdAttribute ? [] : dataProviderConfig.getIdentityRelevantAttributeNames()
 
     attributeNames.push(CLIENT_ID_ATTRIBUTE)
 
     attributeNames.forEach((attributeName:string, index:number) => {
-      if (index != 0)
-      {
-        identityHashCode += '_'
-      }
-
+      let identityHashCodePart: string
       if (dataModel instanceof DataModel)
       {
-        identityHashCode += dataModel.getProperty(attributeName)
+        // debugger
+        identityHashCodePart = dataModel.getProperty(attributeName) || ''
       }
       else
       {
-        identityHashCode += dataModel[attributeName]
+        identityHashCodePart = dataModel[attributeName] as string || ''
       }
+      if (identityHashCodePart)
+      {
+        identityHashCode += '_'
+      }
+      identityHashCode += identityHashCodePart
     })
 
     return identityHashCode
