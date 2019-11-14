@@ -45,6 +45,9 @@ export class DataModelRequestData extends RequestData<DataModel>
     {
       this._dataProvider.onAfterNewInstance(this);
     }
+    else if (this.action == 'delete') {
+      // Fix a bug who didn't really delete a data modell when you wanted to delete it
+    }
     else
     {
       this._dataProvider.onAfterUpdate(this);

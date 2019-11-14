@@ -80,7 +80,6 @@ export class QueueWorker
         }
         else
         {
-          // debugger
           requestData.handleResponse(response as ObjectMap)
         }
       }

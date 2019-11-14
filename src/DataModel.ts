@@ -353,7 +353,6 @@ export class DataModel
   public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig, computeOnlyWithClientIdAttribute?: boolean):string
   {
     let identityHashCode = dataProviderConfig.dataProviderName
-    // debugger
     let attributeNames = computeOnlyWithClientIdAttribute ? [] : dataProviderConfig.getIdentityRelevantAttributeNames()
 
     attributeNames.push(CLIENT_ID_ATTRIBUTE)
@@ -362,7 +361,6 @@ export class DataModel
       let identityHashCodePart: string
       if (dataModel instanceof DataModel)
       {
-        // debugger
         identityHashCodePart = dataModel.getProperty(attributeName) || ''
       }
       else
