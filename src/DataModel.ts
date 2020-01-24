@@ -137,7 +137,9 @@ export class DataModel
       return this.clientChangedProperties.getValue<T>(propertyName)
     }
 
-    return this.properties.getValue<T>(propertyName) || fallbackValue
+    // Changed "this.properties.getValue<T>(propertyName) || fallbackValue" to this because values like false returned into undefined
+    let property: T = this.properties.getValue<T>(propertyName)
+    return property !== undefined ? property : fallbackValue
   }
 
   public getPropertyForFilter(propertyName:string):any

@@ -8,6 +8,8 @@ export * from './ApplyFilterMode'
 export * from './StringOperations'
 export * from './ClassUnmodifiableError'
 export * from './DataModelState'
+export * from './DataCollectionChangeListener'
+export * from './DataModelListener'
 
 // low dependencies
 export * from './ActionUrl'
