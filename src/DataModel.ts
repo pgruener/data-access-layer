@@ -411,10 +411,7 @@ export class DataModel
     // END
 
     attributeNames.forEach((attributeName:string, index:number) => {
-      if (index != 0)
-      {
-        identityHashCode += '_'
-      }
+      identityHashCode += '_'
 
       if (dataModel instanceof DataModel)
       {
