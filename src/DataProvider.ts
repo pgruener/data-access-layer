@@ -236,7 +236,8 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     return dataModel
   }
 
-  private computeRequestVerb(dataModel:T):RequestVerb
+  // Changed private to public to use computeRequestVerb also later
+  public computeRequestVerb(dataModel:T):RequestVerb
   {
     if (dataModel.isMarkedForDeletion())
     {
@@ -244,7 +245,11 @@ export class DataProvider<T extends DataModel> implements DataCollectionChangePr
     }
     else if (dataModel.hasProperty(CLIENT_ID_ATTRIBUTE))
     {
-      return 'create'
+      if (dataModel.setCreationScheduled()) {
+        return 'create'
+      } else {
+        return 'update'
+      }
     }
     else
     {

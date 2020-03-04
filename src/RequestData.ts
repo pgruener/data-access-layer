@@ -3,6 +3,8 @@ import { DataModel } from "./internal";
 import { ActionUrl } from "./internal";
 import { DataProvider } from "./internal";
 
+type RequestDataStatus = 'pending' | 'error' | 'finished' | 'active'
+
 /**
  * RequestData contains every information needed for a {@link BackendConnector} to decide,
  * what kind of request to the backend (i.e. server, local storage, ...) is needed th perform the
@@ -24,6 +26,11 @@ export abstract class RequestData<T>
 
   protected _response:ObjectMap|ObjectMap[]
 
+  protected status: RequestDataStatus = 'pending'
+  protected retryable: boolean = false
+  protected retryAmount: number = 0
+  private clientTimestamp: Date = new Date()
+
   constructor(dataProvider:DataProvider<DataModel>)
   {
     this._dataProvider = dataProvider
@@ -37,6 +44,44 @@ export abstract class RequestData<T>
   public computePayload = () =>
   {
     return this._payload
+  }
+
+  public setActive = ():void => {
+    this.setRetryable(false)
+    if (this.isPending()) {
+      this.status = 'active'
+    } else if (this.isError()) {
+      this.status = 'active'
+      ++this.retryAmount
+    }
+  }
+
+  public isPending = ():boolean => this.status == 'pending'
+
+  public isError = ():boolean => this.status == 'error'
+
+  public isActive = ():boolean => this.status == 'active'
+
+  public isFinished = ():boolean => this.status == 'finished'
+
+  public setFinished = ():void => {
+    this.status = 'finished'
+  }
+
+  public setRetryable = (retryable: boolean):void => {
+    this.retryable = retryable
+  }
+
+  public isRetryable = ():boolean => this.retryable && this.retryAmount < 100
+
+  public setError = ():void => {
+    this.status = 'error'
+  }
+
+  public calculateRetryWaitTime = ():number => this.retryAmount * 500
+
+  public get RetryAmount():number {
+    return this.retryAmount
   }
 
   /**
@@ -63,5 +108,13 @@ export abstract class RequestData<T>
   get response()
   {
     return this._response as ObjectMap|ObjectMap[]
+  }
+
+  public setClientTimestamp = ():void => {
+    this.clientTimestamp = new Date()
+  }
+
+  public get ClientTimestamp():Date {
+    return new Date(this.clientTimestamp.getTime())
   }
 }

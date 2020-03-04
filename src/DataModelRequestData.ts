@@ -4,7 +4,8 @@ import {
   DataModel,
   DataProvider,
   RequestData,
-  UnmodifiableDataModelPropertySet } from "./internal";
+  UnmodifiableDataModelPropertySet,
+  ActionUrl } from "./internal";
 
 /**
  * @class DataModelRequestData
@@ -23,12 +24,13 @@ export class DataModelRequestData extends RequestData<DataModel>
     super(dataProvider);
 
     this._dataModel = dataModel;
+    this._dataModel.informAboutDataModelRequestData(this)
     this._propertiesSnapshot = dataModel.originalProperties.unmodifiableClone();
     this._dataForRequest = dataModel.changedProperties.asObjectMap();
     this._dataForRequest = dataModel.dataProviderConfig.prepareForServer(this);
     this._changedPropertiesSnapshot = dataModel.changedProperties.unmodifiableClone() // Must be done AFTER prepared for server
     this.action = action;
-    this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel)
+    //this._actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel)
     this._payload = this._dataModel.dataProviderConfig.computePayloadForRequest(this);
   }
 
@@ -46,7 +48,8 @@ export class DataModelRequestData extends RequestData<DataModel>
       this._dataProvider.onAfterNewInstance(this);
     }
     else if (this.action == 'delete') {
-      // Fix a bug who didn't really delete a data modell when you wanted to delete it
+      // Fixes a bug who didn't really delete a data modell when you wanted to delete it
+      // ! DON'T REMOVE THIS EMPTY BRANCH WITH THIS COMMENT !!!
     }
     else
     {
@@ -76,5 +79,10 @@ export class DataModelRequestData extends RequestData<DataModel>
   get dataModel()
   {
     return this._dataModel;
+  }
+
+  public getActionUrl = ():ActionUrl => {
+    let actionUrl = this._dataModel.dataProviderConfig.getActionUrlSet().computeActionUrl(this.action, this._dataModel)
+    return actionUrl
   }
 }

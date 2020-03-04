@@ -62,6 +62,10 @@ export class QueueWorker
     let queue = this.requestQueues[queueName]
 
     let requestData = queue[0]
+    if (!requestData.isPending() && !requestData.isError()) {
+      return
+    }
+    requestData.setActive()
 
     if (requestData instanceof DataModelRequestData)
     {
@@ -74,6 +78,7 @@ export class QueueWorker
 
       if (hasResponse)
       {
+        requestData.setClientTimestamp()
         if (response instanceof Array)
         {
           requestData.handleResponse(response as ObjectMap[])
@@ -85,8 +90,16 @@ export class QueueWorker
       }
 
       this.onAfterRequestDone(queueName, !hasResponse)
-    }, (reason: {status: number, statusText: string }) => {
-      console.log('Rejected...', reason)
+
+      requestData.setFinished()
+    }, (reason: {status: number, statusText: string }, retry?: boolean) => {
+      requestData.setError()
+      if (requestData.isRetryable()) {
+        console.log(`Rejected. Retrying ... (${requestData.RetryAmount}) tries`, reason)
+        setTimeout(() => this.doRequestIntern(queueName), requestData.calculateRetryWaitTime())
+      } else {
+        console.log('Rejected.', reason)
+      }
     })
   }
 
@@ -109,7 +122,8 @@ export class QueueWorker
 
     if (queue.length > 0)
     {
-      this.doRequestIntern(queueName)
+      // this.doRequestIntern(queueName)
+      setTimeout(() => this.doRequestIntern(queueName), 1100) //Bad Workorround to don't have the merge-issues with timesteps
     }
   }
 }

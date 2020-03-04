@@ -20,6 +20,7 @@ export class DataModel
   protected dataProvider:DataProvider<DataModel>
   private properties:DataModelPropertySet
   protected clientChangedProperties:DataModelPropertySet = new DataModelPropertySet()
+  private creationScheduled = false // Bei neu angelegter entity, auf der save() aufgerufen wurde
   private markedForDeletion = false
   private transactionRunning = false
   private instanceNr:number
@@ -27,6 +28,9 @@ export class DataModel
   private changeIntervalId:number
   private conflictingModel:DataModel
   private state:DataModelState
+
+  private dataModelRequests: DataModelRequestData[] = []
+  private _pendingObjectMaps: ObjectMap[] = []
 
 
   constructor(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean)
@@ -141,6 +145,8 @@ export class DataModel
     let property: T = this.properties.getValue<T>(propertyName)
     return property === undefined ? fallbackValue : property
   }
+
+  public getClientId = ():string => this.getProperty<string>(CLIENT_ID_ATTRIBUTE)
 
   public getPropertyForFilter(propertyName:string):any
   {
@@ -298,28 +304,57 @@ export class DataModel
   mergeChanges(objectMap:ObjectMap)
   {
     objectMap = this.mapDataIn(objectMap)
-    let anythingChanged = false
 
-    let shouldMerge = this.shouldMerge(objectMap)
-    
-    if (shouldMerge)
-    {
-      Object.keys(objectMap).forEach((propertyName) => {
-        if (!this.properties.hasProperty(propertyName, objectMap[propertyName]))
-        {
-          this.clientChangedProperties.removeProperty(propertyName)
-  
-          this.properties.set(propertyName, objectMap[propertyName])
-          anythingChanged = true
-        }
-      })
+    this._pendingObjectMaps.push(objectMap)
+    if (this.unprocessedDataModelRequests().length > 1) {
+      return
     }
 
+    let anythingChanged = false
+
+    let pendingObjectMap = null
+
+    while (pendingObjectMap = this._pendingObjectMaps.shift()) {
+      let shouldMerge = this.shouldMerge(objectMap)
+      
+      if (shouldMerge)
+      {
+        Object.keys(pendingObjectMap).forEach((propertyName) => {
+          if (!this.properties.hasProperty(propertyName, pendingObjectMap[propertyName]))
+          {
+            this.clientChangedProperties.removeProperty(propertyName)
+    
+            this.properties.set(propertyName, pendingObjectMap[propertyName])
+            anythingChanged = true
+          }
+        })
+      }
+    }
+
+    this.removeFinishedDataModelRequests()
 
     if (anythingChanged)
     {
       this.triggerChangeListeners()
     }
+  }
+
+  private removeFinishedDataModelRequests = ():void => {
+    this.dataModelRequests = this.dataModelRequests.filter((dataModelRequestData: DataModelRequestData) => !dataModelRequestData.isFinished())
+  }
+
+  private unprocessedDataModelRequests = ():DataModelRequestData[] => {
+    // let results: DataModelRequestData[] = []
+    // for (let i = 0; i < this.dataModelRequests.length; ++i) {
+    //   if (this.dataModelRequests[i].isFinished()) {
+    //     /*this.dataModelRequests.splice(i, 1)
+    //     --i*/
+    //   } else {
+    //     results.push(this.dataModelRequests[i])
+    //   }
+    // }
+    // return results
+    return this.dataModelRequests.filter((dataModelRequest: DataModelRequestData) => !dataModelRequest.isFinished())
   }
 
   /**
@@ -338,6 +373,14 @@ export class DataModel
     this.dataProvider.doRequest(new ActionRequestData(this.dataProvider, this, action, actionVariables, payload))
   }
 
+  public setCreationScheduled = ():boolean => {
+    if (this.creationScheduled) {
+      return false
+    }
+    
+    return this.creationScheduled = true
+  }
+
   /**
    * Computes the identityHashCode for the given dataModel or object.
    * The identiyHashCode identifies one DataModel bijectivly.
@@ -354,28 +397,39 @@ export class DataModel
    */
   public static computeIdentityHashCode(dataModel:DataModel|ObjectMap, dataProviderConfig:DataProviderConfig, computeOnlyWithClientIdAttribute?: boolean):string
   {
-    let identityHashCode = dataProviderConfig.dataProviderName
+    let identityHashCode: string = dataProviderConfig.dataProviderName
+
+    // special handling for !Client-Only! unpersisted entities
+    if (dataModel instanceof DataModel && !dataModel.isPersisted()) {
+      return identityHashCode += '_' + dataModel.getProperty(CLIENT_ID_ATTRIBUTE)
+    }
+
+    // TODO: put this in extra method, which can be overloaded in inheriting model
     let attributeNames = computeOnlyWithClientIdAttribute ? [] : dataProviderConfig.getIdentityRelevantAttributeNames()
 
     attributeNames.push(CLIENT_ID_ATTRIBUTE)
+    // END
 
     attributeNames.forEach((attributeName:string, index:number) => {
-      let identityHashCodePart: string
-      if (dataModel instanceof DataModel)
-      {
-        identityHashCodePart = dataModel.getProperty(attributeName) || ''
-      }
-      else
-      {
-        identityHashCodePart = dataModel[attributeName] as string || ''
-      }
-      if (identityHashCodePart)
+      if (index != 0)
       {
         identityHashCode += '_'
       }
-      identityHashCode += identityHashCodePart
+
+      if (dataModel instanceof DataModel)
+      {
+        identityHashCode += dataModel.getProperty(attributeName) || ''
+      }
+      else
+      {
+        identityHashCode += dataModel[attributeName] || ''
+      }
     })
 
     return identityHashCode
+  }
+
+  public informAboutDataModelRequestData = (dataModelRequestData: DataModelRequestData):void => {
+    this.dataModelRequests.push(dataModelRequestData)
   }
 }
