@@ -2,8 +2,7 @@ import { ObjectMap } from "./internal";
 import { DataModel } from "./internal";
 import { ActionUrl } from "./internal";
 import { DataProvider } from "./internal";
-
-type RequestDataStatus = 'pending' | 'error' | 'finished' | 'active'
+import { RequestDataStatus } from './internal'
 
 /**
  * RequestData contains every information needed for a {@link BackendConnector} to decide,
@@ -82,6 +81,10 @@ export abstract class RequestData<T>
 
   public get RetryAmount():number {
     return this.retryAmount
+  }
+
+  public get Status():RequestDataStatus {
+    return this.status
   }
 
   /**

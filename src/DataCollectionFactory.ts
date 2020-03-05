@@ -9,6 +9,8 @@ import { DataModelConstructor } from "./internal";
 import { StringOperations } from './internal'
 import { QueueWorker } from "./internal";
 import { BackendConnector } from "./internal";
+import { QueueWorkerListener } from './internal'
+import { QueueState } from './internal'
 
 /**
  * An instance of DataCollectionFactory is used to operate with the core concepts of the data access layer.
@@ -86,4 +88,10 @@ export class DataCollectionFactory
     this._externalDataCollectionFactory = externalDataCollectionFactory
     this.queueWorker = new QueueWorker(backendConnector)
   }
+
+  public addQueueWorkerListener = (queueWorkerListener: QueueWorkerListener):void => this.queueWorker.addQueueWorkerListener(queueWorkerListener)
+
+  public removeQueueWorkerListener = (queueWorkerListener: QueueWorkerListener):void => this.queueWorker.removeQueueWorkerListener(queueWorkerListener)
+
+  public computeActualQueueStates = ():QueueState[] => this.queueWorker.computeActualQueueStates()
 }

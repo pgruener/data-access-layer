@@ -305,33 +305,31 @@ export class DataModel
   {
     objectMap = this.mapDataIn(objectMap)
 
-    this._pendingObjectMaps.push(objectMap)
-    if (this.unprocessedDataModelRequests().length > 1) {
-      return
-    }
-
     let anythingChanged = false
 
-    let pendingObjectMap = null
+    let shouldMerge = this.shouldMerge(objectMap)
+    let unprocessedChanges = this.unprocessedDataModelRequests().length > 1
 
-    while (pendingObjectMap = this._pendingObjectMaps.shift()) {
-      let shouldMerge = this.shouldMerge(objectMap)
-      
-      if (shouldMerge)
-      {
-        Object.keys(pendingObjectMap).forEach((propertyName) => {
-          if (!this.properties.hasProperty(propertyName, pendingObjectMap[propertyName]))
-          {
+    if (shouldMerge)
+    {
+      Object.keys(objectMap).forEach((propertyName) => {
+        if (!this.properties.hasProperty(propertyName, objectMap[propertyName]))
+        {
+          let newValue = objectMap[propertyName]
+
+          if (!unprocessedChanges) {
             this.clientChangedProperties.removeProperty(propertyName)
-    
-            this.properties.set(propertyName, pendingObjectMap[propertyName])
-            anythingChanged = true
           }
-        })
-      }
+  
+          this.properties.set(propertyName, newValue)
+          anythingChanged = true
+        }
+      })
     }
-
-    this.removeFinishedDataModelRequests()
+    
+    if (!unprocessedChanges) {
+      this.removeFinishedDataModelRequests()
+    }
 
     if (anythingChanged)
     {
@@ -344,16 +342,6 @@ export class DataModel
   }
 
   private unprocessedDataModelRequests = ():DataModelRequestData[] => {
-    // let results: DataModelRequestData[] = []
-    // for (let i = 0; i < this.dataModelRequests.length; ++i) {
-    //   if (this.dataModelRequests[i].isFinished()) {
-    //     /*this.dataModelRequests.splice(i, 1)
-    //     --i*/
-    //   } else {
-    //     results.push(this.dataModelRequests[i])
-    //   }
-    // }
-    // return results
     return this.dataModelRequests.filter((dataModelRequest: DataModelRequestData) => !dataModelRequest.isFinished())
   }
 

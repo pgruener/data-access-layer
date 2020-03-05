@@ -10,10 +10,13 @@ export * from './ClassUnmodifiableError'
 export * from './DataModelState'
 export * from './DataCollectionChangeListener'
 export * from './DataModelListener'
+export * from './QueueState'
+export * from './RequestDataStatus'
 
 // low dependencies
 export * from './ActionUrl'
 export * from './ActionUrlConfig'
+export * from './QueueWorkerListener'
 
 
 export * from './DataModelPropertyMetaDate'
