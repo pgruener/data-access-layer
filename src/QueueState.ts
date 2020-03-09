@@ -1,5 +1,5 @@
-import { RequestDataStatus } from './internal'
+import { RequestInformation } from './internal'
 export interface QueueState {
   queueName: string
-  requestStates: RequestDataStatus[]
+  requestInformations: RequestInformation[]
 }

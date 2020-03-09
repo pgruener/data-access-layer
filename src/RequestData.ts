@@ -19,6 +19,7 @@ import { RequestDataStatus } from './internal'
  */
 export abstract class RequestData<T>
 {
+  private static requestDataIdCounter: number = 0
   protected readonly _dataProvider:DataProvider<DataModel>
   protected _actionUrl:ActionUrl
   protected _payload:ObjectMap
@@ -30,9 +31,13 @@ export abstract class RequestData<T>
   protected retryAmount: number = 0
   private clientTimestamp: Date = new Date()
 
+  // https://gist.github.com/gordonbrander/2230317
+  private _id = Math.random().toString(36).substr(2, 9) + '_' + this.clientTimestamp.getTime() + '_' + RequestData.requestDataIdCounter
+
   constructor(dataProvider:DataProvider<DataModel>)
   {
     this._dataProvider = dataProvider
+    ++RequestData.requestDataIdCounter
   }
 
   public getActionUrl = () =>
@@ -119,5 +124,9 @@ export abstract class RequestData<T>
 
   public get ClientTimestamp():Date {
     return new Date(this.clientTimestamp.getTime())
+  }
+
+  public get id():string {
+    return this._id
   }
 }

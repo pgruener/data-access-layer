@@ -17,6 +17,7 @@ export * from './RequestDataStatus'
 export * from './ActionUrl'
 export * from './ActionUrlConfig'
 export * from './QueueWorkerListener'
+export * from './RequestInformation'
 
 
 export * from './DataModelPropertyMetaDate'
