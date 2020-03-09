@@ -182,7 +182,8 @@ export class QueueWorker
       this.requestQueues[queueName].requests.forEach((requestData: RequestData<DataModel>) => requestInformations.push({
         id: requestData.id,
         status: requestData.Status,
-        removeFromQueue: () => this.deleteRequestDataFromQueue(requestData, queueName)
+        removeFromQueue: () => this.deleteRequestDataFromQueue(requestData, queueName),
+        repeatRequest: () => this.forceRepeatingRequest(requestData, queueName)
       }))
       queueStates.push({
         queueName: queueName,
@@ -211,6 +212,21 @@ export class QueueWorker
             // The merge issue can happen here unfortunatly
             this.doRequestIntern(queueName)
           }
+        }
+      }
+    }
+  }
+
+  private forceRepeatingRequest = (requestData: RequestData<DataModel>, queueName: string) => {
+    if (requestData.isError()) {
+      let index: number = this.requestQueues[queueName].requests.indexOf(requestData)
+      if (index == 0) {
+        requestData.resetRetryAmount()
+        let queueTimeoutId: number = this.queueTimeoutIds[queueName]
+        window.clearTimeout(queueTimeoutId)
+        if (queueTimeoutId || !this.requestQueues[queueName].active) {
+          // The merge issue can happen here unfortunatly
+          this.doRequestIntern(queueName)
         }
       }
     }

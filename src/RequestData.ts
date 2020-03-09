@@ -84,6 +84,10 @@ export abstract class RequestData<T>
 
   public calculateRetryWaitTime = ():number => this.retryAmount * 500
 
+  public resetRetryAmount = ():void => {
+    this.retryAmount = 0
+  }
+
   public get RetryAmount():number {
     return this.retryAmount
   }
