@@ -11,6 +11,8 @@ import { DataModelState } from './internal';
 import { DataModelPropertySet } from './internal';
 import { DataModelRequestData } from './internal';
 
+let clientIdCounter: number = 0
+
 export class DataModel
 {
   private listeners:Array<DataModelListener> = new Array()
@@ -31,6 +33,8 @@ export class DataModel
 
   private dataModelRequests: DataModelRequestData[] = []
   private _pendingObjectMaps: ObjectMap[] = []
+
+  private _clientId: string = `model_${Date.now()}_${++clientIdCounter}`
 
 
   constructor(properties:ObjectMap, dataProvider:DataProvider<DataModel>, isNewInstance?:boolean)
@@ -146,7 +150,7 @@ export class DataModel
     return property === undefined ? fallbackValue : property
   }
 
-  public getClientId = ():string => this.getProperty<string>(CLIENT_ID_ATTRIBUTE)
+  public getClientId = ():string => this._clientId //this.getProperty<string>(CLIENT_ID_ATTRIBUTE)
 
   public getPropertyForFilter(propertyName:string):any
   {
